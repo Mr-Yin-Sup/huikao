@@ -19,4 +19,6 @@
 
 ## 效果图:
 
-![123](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(12).png)
+<img src="https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(12).png" style="zoom:25%;" />
+
+<img src="https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(11).png" style="zoom:25%;" />
