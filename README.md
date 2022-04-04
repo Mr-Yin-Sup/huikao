@@ -19,5 +19,4 @@
 
 ## 效果图:
 
-![]([huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (10).png))
-
+![123](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(12).png)
