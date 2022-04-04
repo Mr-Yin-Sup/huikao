@@ -9,7 +9,7 @@
 
 前端 uniapp + colorui 目前适配了h5 和 App 
 
-
+**觉得不错的话点个Starred**
 
 **后台管理账号 : admin    密码: mryin**
 
