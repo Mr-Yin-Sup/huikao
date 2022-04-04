@@ -19,26 +19,5 @@
 
 ## 效果图:
 
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (12).png)" style="zoom:25%;" />
+![]([huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (10).png))
 
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (11).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (10).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (9).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (8).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (7).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (6).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (5).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (4).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (3).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (2).png)" style="zoom:25%;" />
-
-<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk1.png)" style="zoom:25%;" />
