@@ -19,6 +19,8 @@
 
 ## 效果图:
 
+<center class="half">
+
 <img src="https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(12).png" style="zoom:25%;" width="250"/>
 
 <img src="https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(11).png" style="zoom:25%;" width="250"/>
@@ -42,4 +44,6 @@
 <img src="https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk%20(2).png" style="zoom:25%;" width="250"/>
 
 <img src="https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk1.png" style="zoom:25%;" />
+
+</center>
 
