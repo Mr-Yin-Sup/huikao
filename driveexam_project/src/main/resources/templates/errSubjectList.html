@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+
+
+
+	</head>
+	<body>
+		<div id="app">
+
+
+
+			<el-button @click="handleCheck" type="danger">批量删除</el-button>
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+
+
+			<el-table :data="list" stripe border  @selection-change="handleSelectionChange" style="width: 100%">
+				<!--          选择框-->
+				<el-table-column
+						type="selection"
+						width="55">
+				</el-table-column>
+				<el-table-column label="用户ID" prop="user.uId" width="80">
+
+				</el-table-column>
+
+				<el-table-column label="用户名" width="100" prop="user.uName">
+
+				</el-table-column>
+				<el-table-column label="题号" width="70" prop="sId">
+
+				</el-table-column>
+
+
+				<el-table-column label="题目信息" width="400" prop="subject.sQuestion">
+
+				</el-table-column>
+				<el-table-column label="纠错内容" width="500" prop="errMsg">
+					<template slot-scope="scope">
+						<el-popover trigger="hover" placement="top">
+							<div style="width: 500px">
+								<p>{{ scope.row.errMsg }}</p>
+							</div>
+							<div slot="reference" class="name-wrapper">
+								<p class="text-hidden">{{ scope.row.errMsg }}</p>
+							</div>
+						</el-popover>
+					</template>
+				</el-table-column>
+				<el-table-column label="提交时间" width="180" prop="time">
+
+				</el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+
+						<el-button
+								size="mini"
+								@click="handleEdit(scope.row)">修改该题
+						</el-button>
+						<el-button size="mini" type="danger" @click="handleDelete(scope.row.errId)">删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+
+
+			<!--修改弹窗-->
+			<el-dialog
+					title="修改题目"
+					:visible.sync="showModView"
+					width="80%"
+					height="100%"
+
+			>
+				<iframe ref="modView" id="modView" :src="'/admin/productMod?sId='+modId" frameborder="0" width="100%"
+						height="600px"></iframe>
+				<span slot="footer" class="dialog-footer">
+                <!--            调用子iframe页面中的方法进行修改-->
+		<el-button @click="modSubjectAndHandleBySId">修改并且删除所有此题纠错</el-button>
+		<el-button @click="modSubjectAndHandle">修改并且删除此条纠错</el-button>
+        <el-button @click="modSubject">仅修改</el-button>
+        <el-button @click="showModView = false">关闭</el-button>
+
+      </span>
+			</el-dialog>
+
+
+			<!--        分页功能-->
+			<div style="width: 100%">
+				<div class="block" >
+
+					<el-pagination
+							style="margin: 0 auto"
+							@size-change="size_change"
+							@current-change="current_change"
+							:current-page="current_page"
+							:page-sizes="[5, 10, 15, 20]"
+							:page-size="page_size"
+							layout="total, sizes, prev, pager, next, jumper"
+							:total="total">
+					</el-pagination>
+				</div>
+			</div>
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					showAddView: false,
+					//knowPoints: null,
+					list:null,
+					showModView: false,
+					list:null,
+					showModView: false,
+					current_page:1 ,//当前页数
+					page_size: 10,//一页显示多少条
+					total: 0,//总共多少条
+					checkErrSubjhect:[],
+					pageNum:1,
+					modId:0,
+					addForm: {
+						knowName: ""
+					},
+					modForm: {
+						knowName: "",
+						knowId: null
+					}
+
+				},
+
+				methods: {
+					handleEdit(row) {//显示修改视图
+
+						this.modId = row.sId;
+						this.err_id=row.errId;
+						this.showModView = true;
+					},
+					handleSelectionChange(val) {//表格多选框
+						this.checkErrSubjhect = val;
+					},
+					current_change(e) {//跳转分页
+						this.current_page = e;
+						this.updateTable();
+					},
+					size_change(e) {//修改每页显示数量
+						this.page_size = e;
+						this.updateTable();
+					},
+					modSubjectAndHandle(){//修改并处理纠错
+						let that=this;
+						this.$confirm('此操作会修改题目并且删除这一条纠错记录', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							this.modSubject();
+
+							$.post("/admin/handleErrSubject", {
+								'id': this.err_id,
+								'state':1
+							}, function(res) {
+								if (res == "success") {
+
+									$.post("/admin/findAllErrSubject", {pageNum:this.current_page,pageSize: this.page_size},function(res) {
+
+										that.total=res.total;
+										that.list = res.list;
+
+									})
+									return;
+
+								}
+							})
+						}).catch(()=>{
+							this.$notify.info({
+								message: '以取消操作'
+							});
+						})
+
+
+
+					},
+					modSubjectAndHandleBySId(){//修改并处理纠错通过题目id
+						let that=this;
+						this.$confirm('此操作会修改题目并且删除有关这条题目的纠错记录', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							this.modSubject();
+							$.post("/admin/handleErrSubjectBySId", {
+								'sId': this.modId,
+								'state':1
+							}, function(res) {
+								if (res == "success") {
+
+									$.post("/admin/findAllErrSubject", {pageNum:this.current_page,pageSize: this.page_size},function(res) {
+
+										that.total=res.total;
+										that.list = res.list;
+
+									})
+									return;
+
+								}
+							})
+						}).catch(()=>{
+							this.$notify.info({
+								message: '以取消操作'
+							});
+						})
+
+
+
+					},
+					modSubject(){
+						let data = {
+							type:2,
+							code:200,
+							data:'addClick'
+						}
+						this.$refs.modView.contentWindow.postMessage(data,'*')
+					},
+
+					handleDelete(errId) {
+						let that = this;
+
+						this.$confirm('确定删除?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							$.post("/admin/handleErrSubject", {
+								'id': errId,
+								'state':1
+							}, function(res) {
+								if (res == "success") {
+									that.$notify({
+										message: '删除成功',
+										type: 'success'
+									});
+									that.updateTable();
+									return;
+
+								}
+							})
+						}).catch(() => {
+							this.$notify({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+
+					},
+					updateTable() {
+
+						let that = this;
+
+						$.post("/admin/findAllErrSubject", {pageNum:this.current_page,pageSize: this.page_size},function(res) {
+
+							that.total=res.total;
+							that.list = res.list;
+							that.$notify({
+								type: "success",
+								message: '数据拉取成功',
+							})
+						})
+					},
+					handleCheck() {//删除选择的题目
+						let that = this;
+						if (this.checkErrSubjhect.length > 0) {
+							let str = '';
+							for (let i = 0; i < this.checkErrSubjhect.length; i++) {
+								str += this.checkErrSubjhect[i].errId + ','
+							}
+							str = str.slice(0, str.length - 1);
+
+							this.$confirm('删除这' + this.checkErrSubjhect.length + '条数据, 是否继续?', '提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
+								$.post("/admin/errSubjectHandleCheck", {checks: str}, function (res) {
+									if (res == 'success') {
+										that.$notify({
+											type: 'success',
+											message: '删除成功!'
+										});
+										that.updateTable();
+										return;
+									}
+								})
+
+							}).catch(() => {
+								that.$notify({
+									type: 'info',
+									message: '已取消删除'
+								});
+							});
+						}
+					},
+
+				},
+				created() {
+					this.updateTable();
+				},
+				mounted() {
+					let that = this;
+					// 监听子页面想父页面的传参
+					window.addEventListener('message', function (event) {
+
+
+						if (event.data.data == "close") {//数据添加成功关闭子页面
+							that.$notify({
+								type: 'success',
+								message: '添加成功!'
+							});
+							that.showAddView = false;
+							that.search();
+
+						}
+
+						if (event.data.data == "updateOk") {//数据修改成功关闭子页面
+							that.$notify({
+								type: 'success',
+								message: '修改成功!'
+							});
+							that.showModView = false;
+							that.updateTable();
+
+						}
+
+					})
+				},
+
+			});
+		</script>
+	</body>
+</html>

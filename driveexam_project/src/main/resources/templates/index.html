@@ -1,0 +1,565 @@
+<!doctype html>
+<html class="x-admin-sm" xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="UTF-8">
+		<title>慧考后台管理系统</title>
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport"
+			content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/xadmin.css">
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script type="text/javascript" src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+		<script src="/lib/layui/layui.js" charset="utf-8"></script>
+
+		<script type="text/javascript" src="/js/xadmin.js"></script>
+		<script type="text/javascript" src="/js/cookie.js"></script>
+
+
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+		<script>
+			// 是否开启刷新记忆tab功能
+			// var is_remember = false;
+		</script>
+		<style>
+			#nav li{
+				height: 50px;
+				line-height: 50px;
+
+			}
+			#nav li a cite{
+				font-size: 30px;
+			}
+		</style>
+	</head>
+	<body >
+		<div id="app">
+		<!-- 顶部开始 -->
+		<div class="container">
+			<div class="logo"><a href="./index">慧考后台管理系统</a></div>
+			<div class="left_open">
+				<i title="展开左侧栏" class="iconfont">&#xe699;</i>
+			</div>
+			<ul class="layui-nav right" lay-filter="">
+				<li class="layui-nav-item">
+					<a href="javascript:;" th:text="'欢迎您 ： '+${session.user.uName}"></a>
+<!--					<dl class="layui-nav-child">-->
+<!--						&lt;!&ndash; 二级菜单 &ndash;&gt;-->
+<!--						<dd><a onclick="x_admin_show('个人信息','/login')">个人信息</a></dd>-->
+<!--						<dd><a href="/loginOut">退出</a></dd>-->
+<!--					</dl>-->
+				</li>
+				<li class="layui-nav-item to-index" ><a  @click="dialogVisible= true">修改密码</a></li>
+				<li class="layui-nav-item to-index"><a onclick="return confirm('确定退出?')" href="/loginOut">退出登录</a></li>
+
+			</ul>
+
+		</div>
+		<!-- 顶部结束 -->
+		<!-- 中部开始 -->
+		<!-- 左侧菜单开始 -->
+		<div class="left-nav">
+			<div id="side-nav">
+				<ul id="nav" style="text-align: center">
+					<li>
+						<a _href="/admin/productList">
+							<i class="el-icon-document-remove"></i>
+							<cite>题目管理</cite>
+						</a>
+					</li>
+
+					<li>
+						<a _href="/admin/chaperList">
+							<i class="el-icon-notebook-2"></i>
+							<cite>章节管理</cite>
+						</a>
+					</li>
+
+					<li>
+						<a _href="/admin/knowPointList">
+							<i class="el-icon-more"></i>
+							<cite>知识点管理</cite>
+						</a>
+					</li>
+
+					<li>
+						<a _href="/admin/examSet">
+
+							<i class="el-icon-s-tools"></i>
+							<cite>考试设置</cite>
+						</a>
+					</li>
+					<li>
+						<a _href="/admin/icnoTypeList">
+							<i class="el-icon-menu"></i>
+							<cite>图标分类管理</cite>
+						</a>
+					</li>
+					<li>
+						<a _href="/admin/icnoList">
+							<i class="el-icon-picture"></i>
+							<cite>图标管理</cite>
+						</a>
+					</li>
+					<li>
+						<a _href="/admin/fBackList">
+							<i class="el-icon-chat-dot-square"></i>
+							<cite>反馈管理</cite>
+						</a>
+					</li>
+					<li>
+						<a _href="/admin/errSubjectList">
+							<i class="el-icon-warning-outline"></i>
+							<cite>纠错管理</cite>
+						</a>
+					</li>
+					<li>
+
+						<a _href="/admin/userList">
+							<i class="el-icon-s-custom"></i>
+							<cite>用户管理</cite>
+						</a>
+					</li>
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe6db;</i>-->
+<!--							<cite>题目管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="/admin/productList">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>题目列表</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="brand-list.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>品牌管理</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="product-typelist.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>分类管理</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;订单管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe74a;</i>-->
+<!--							<cite>订单管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="transaction.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>订单信息</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="order-list.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>订单列表</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;活动管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe713;</i>-->
+<!--							<cite>活动管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="cate.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>多级分类</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;消息管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe69f;</i>-->
+<!--							<cite>消息管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="city.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>三级地区联动</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;会员管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe735;</i>-->
+<!--							<cite>会员管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li date-refresh="1">-->
+<!--								<a _href="member-list.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>会员列表(静态表格)</cite>-->
+
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="member-list1.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>会员列表(动态表格)</cite>-->
+
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li date-refresh="1">-->
+<!--								<a _href="member-del.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>会员删除</cite>-->
+
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a href="javascript:;">-->
+<!--									<i class="iconfont">&#xe70b;</i>-->
+<!--									<cite>会员管理</cite>-->
+<!--									<i class="iconfont nav_right">&#xe697;</i>-->
+<!--								</a>-->
+<!--								<ul class="sub-menu">-->
+<!--									<li>-->
+<!--										<a _href="xxx.html">-->
+<!--											<i class="iconfont">&#xe6a7;</i>-->
+<!--											<cite>会员列表</cite>-->
+
+<!--										</a>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<a _href="xx.html">-->
+<!--											<i class="iconfont">&#xe6a7;</i>-->
+<!--											<cite>会员删除</cite>-->
+
+<!--										</a>-->
+<!--									</li>-->
+<!--									<li>-->
+<!--										<a _href="xx.html">-->
+<!--											<i class="iconfont">&#xe6a7;</i>-->
+<!--											<cite>等级管理</cite>-->
+
+<!--										</a>-->
+<!--									</li>-->
+
+<!--								</ul>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;报表管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe6a2;</i>-->
+<!--							<cite>报表管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="echarts1.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>拆线图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts2.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>柱状图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts3.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>地图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts4.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>饼图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts5.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>雷达图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts6.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>k线图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts7.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>热力图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="echarts8.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>仪表图</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;系统管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe6ae;</i>-->
+<!--							<cite>系统管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="admin-list.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>系统设置</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="admin-role.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>系统日志</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="admin-cate.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>权限分类</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="admin-rule.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>权限管理</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					&lt;!&ndash;管理员管理&ndash;&gt;-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe726;</i>-->
+<!--							<cite>管理员管理</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="admin-list.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>管理员列表</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="admin-role.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>角色管理</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="admin-cate.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>权限分类</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="admin-rule.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>权限管理</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe6b4;</i>-->
+<!--							<cite>图标字体</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a _href="unicode.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>图标对应字体</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--					<li>-->
+<!--						<a href="javascript:;">-->
+<!--							<i class="iconfont">&#xe6b4;</i>-->
+<!--							<cite>其它页面</cite>-->
+<!--							<i class="iconfont nav_right">&#xe697;</i>-->
+<!--						</a>-->
+<!--						<ul class="sub-menu">-->
+<!--							<li>-->
+<!--								<a href="login.html" target="_blank">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>登录页面</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a _href="error.html">-->
+<!--									<i class="iconfont">&#xe6a7;</i>-->
+<!--									<cite>错误页面</cite>-->
+<!--								</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+				</ul>
+			</div>
+		</div>
+		<!-- <div class="x-slide_left"></div> -->
+		<!-- 左侧菜单结束 -->
+		<!-- 右侧主体开始 -->
+		<div class="page-content">
+			<div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+				<ul class="layui-tab-title">
+					<li class="home"><i class="layui-icon">&#xe68e;</i>欢迎页</li>
+				</ul>
+				<div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+					<dl>
+						<dd data-type="this">关闭当前</dd>
+						<dd data-type="other">关闭其它</dd>
+						<dd data-type="all">关闭全部</dd>
+					</dl>
+				</div>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+<!--						<iframe src='./productList' frameborder="0" scrolling="yes" class="x-iframe"></iframe>-->
+						<h1 align="center"  style="margin-top: 200px">欢迎使用慧考后台管理系统</h1>
+					</div>
+				</div>
+				<div id="tab_show"></div>
+			</div>
+		</div>
+		<div class="page-content-bg"></div>
+		<!-- 右侧主体结束 -->
+		<!-- 中部结束 -->
+		<!-- 底部开始 -->
+		<div class="footer">
+			<div class="copyright">版权所有：MrYin</div>
+			<!--        <div class="copyleft">地址：</div>-->
+		</div>
+		<!-- 底部结束 -->
+<!--		弹出层-->
+		<el-dialog
+				title="修改密码"
+				:visible.sync="dialogVisible"
+				width="50%"
+				:close-on-click-modal="false"
+				>
+			<el-form  >
+				<el-form-item label="旧密码" >
+					<el-input v-model="pwdForm.oldPwd"  onKeyUp="value=value.replace(/[\W]/g,'')" maxlength="16"  show-password ></el-input>
+				</el-form-item>
+				<el-form-item label="新密码" >
+					<el-input v-model="pwdForm.newPwd"  onKeyUp="value=value.replace(/[\W]/g,'')" maxlength="16" show-password autocomplete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="确认新密码" >
+					<el-input v-model="pwdForm.newPwd2"  onKeyUp="value=value.replace(/[\W]/g,'')" maxlength="16" show-password autocomplete="off"></el-input>
+				</el-form-item>
+
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+			<el-button @click="initPwdForm();dialogVisible = false;">取 消</el-button>
+			<el-button type="primary" @click="updatePwd">保存</el-button>
+		  </span>
+		</el-dialog>
+		</div>
+
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				dialogVisible:false,
+				pwdForm:{
+					oldPwd:'',
+					newPwd:'',
+					newPwd2:'',
+				},
+			},
+			methods:{
+				initPwdForm(){
+					this.pwdForm.oldPwd='';
+					this.pwdForm.newPwd='';
+					this.pwdForm.newPwd2='';
+				},
+				updatePwd(){
+					for(let index in this.pwdForm){
+						if(this.pwdForm[index].length<5){
+							alert("有未输入的项,或者至少输入5位密码!")
+							return;
+						}
+					}
+
+
+					let p=new Promise((resolve, reject)=>{
+						$.post("/admin/checkPassword",{password:this.pwdForm.oldPwd},(res)=>{
+							resolve(res);
+						})
+					})
+					p.then((data)=>{
+						if (data!='success'){
+							alert('旧密码不正确');
+							return;
+						}else{
+							if(this.pwdForm.oldPwd==this.pwdForm.newPwd){
+								alert("新密码与旧密码不可相同!")
+								return;
+							}
+							let b=this.pwdForm.newPwd==this.pwdForm.newPwd2;
+							if(b){
+								$.post("/admin/updateAdminPassword",{password:this.pwdForm.newPwd},(res)=>{
+									if(res=='success')
+									alert("修改成功!");
+									this.dialogVisible=false;
+									this.initPwdForm();
+									return;
+
+								})
+							}else{
+								alert("两次输入的密码不一致!");
+								return;
+							}
+						}
+					})
+				}
+			},
+			onLoad(){
+
+			}
+
+		})
+
+	</script>
+
+	</body>
+</html>

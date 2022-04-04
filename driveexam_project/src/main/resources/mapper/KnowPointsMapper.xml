@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.KnowPointsMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.KnowPoints">
+    <id column="know_id" jdbcType="INTEGER" property="knowId" />
+    <result column="know_name" jdbcType="VARCHAR" property="knowName" />
+<!--    <collection property="subjects"   ofType="cn.mryin.driveexam.pojo.Subject"   select="cn.mryin.driveexam.mapper.SubjectMapper.findSubjectByKnowId"  column="know_id">-->
+
+<!--    </collection>-->
+    <association property="count" column="know_id" select="selectKnowPointsCount"/>
+
+  </resultMap>
+
+  <select id="selectKnowPointsCount" parameterType="int" resultType="int">
+    select count(*) from subject where know_id=#{k_id}
+  </select>
+
+  <sql id="Base_Column_List">
+    know_id, know_name, know_km, know_car
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from know_points
+    where know_id = #{knowId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from know_points
+    where know_id = #{knowId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.KnowPoints">
+    insert into know_points (know_id, know_name)
+    values (#{knowId,jdbcType=INTEGER}, #{knowName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.KnowPoints">
+    insert into know_points
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="knowId != null">
+        know_id,
+      </if>
+      <if test="knowName != null">
+        know_name,
+      </if>
+      <if test="knowKm != null">
+        know_km,
+      </if>
+      <if test="knowCar != null">
+        know_car,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="knowId != null">
+        #{knowId,jdbcType=INTEGER},
+      </if>
+      <if test="knowName != null">
+        #{knowName,jdbcType=VARCHAR},
+      </if>
+      <if test="knowKm != null">
+        #{knowKm,jdbcType=VARCHAR},
+      </if>
+      <if test="knowCar != null">
+        #{knowCar,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.KnowPoints">
+    update know_points
+    <set>
+      <if test="knowName != null">
+        know_name = #{knowName,jdbcType=VARCHAR},
+      </if>
+      <if test="knowKm != null">
+        know_km = #{knowKm,jdbcType=VARCHAR},
+      </if>
+      <if test="knowCar != null">
+        know_car = #{knowCar,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where know_id = #{knowId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.KnowPoints">
+    update know_points
+    set know_name = #{knowName,jdbcType=VARCHAR}
+    where know_id = #{knowId,jdbcType=INTEGER}
+  </update>
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from know_points
+  </select>
+</mapper>

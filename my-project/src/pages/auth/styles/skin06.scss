@@ -1,0 +1,105 @@
+    $boxWidth:640rpx;
+    $mainColor: #7b8df9;
+	.wrap{
+		background-color: #fcfcfc;
+		background-image: url(/static/images/bg04.png);
+		background-position: bottom;
+		background-repeat: no-repeat;
+		background-size: 100%;
+	}
+	.logoimg{
+		width: 160rpx;
+		height: 160rpx;
+		display: none;
+	}
+	.placeholder{
+		color: #DCDFE6;
+	}
+	.main-color{
+		color: $mainColor;
+	}
+	.underline{
+		text-decoration: underline;
+	}
+	.tabs{
+		width: $boxWidth;
+		height: 100rpx;
+		margin-top: 50rpx;
+	}
+	.btns{
+		width: $boxWidth;
+		margin-top: 80rpx;
+	}
+	.qbtn{
+		height: 90rpx;
+		border-radius: 50rpx;
+		background-color: $mainColor;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 1px 0 2px rgba(0,0,0,0.05);
+	}
+	.btn-text-color{
+		color: #ffffff;
+	}
+	.nav-text-color{
+		color: #999999;
+	}
+	.label{
+		width: 120rpx;
+		display: none;
+	}
+	.label_icon{
+		width: 38rpx;
+		height: 38rpx;
+		margin-right: 30rpx;
+		display: none;
+	}
+	.label_fgs{
+		height: 36rpx;
+		width: 1px;
+		border-left:1px solid #E5E5E5;
+		margin-right: 30rpx;
+		display: none;
+	}
+  .topbox{
+	   width: 750rpx;
+	   // height: 400rpx;
+  }
+  .form{
+	  width: $boxWidth;
+	  margin-top: 100rpx;
+  }
+  .form-item{
+	  padding: 30rpx 0;
+	  border-bottom: 1px solid #eee;
+  }
+  .tabs .flex-1{
+	  position: relative;
+  }
+  .tabs .flex-1::before{
+	  content: "";
+	  position: absolute;
+	  bottom:0;
+	  width: 280rpx;
+	  height: 3rpx;
+	  border-radius: 4rpx;
+	  background-color: #eeeeee;
+  }
+  .active{
+	  position: relative;
+  }
+  .active::after{
+	  content: "";
+	  position: absolute;
+	  bottom:0;
+	  width: 280rpx;
+	  height: 3rpx;
+	  border-radius: 4rpx;
+	  background-color: $mainColor;
+  }
+  .curtext{
+	  color: $mainColor;
+  }

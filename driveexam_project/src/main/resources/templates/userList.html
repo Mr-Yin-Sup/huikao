@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+
+		<style>
+			.avatar-uploader .el-upload {
+				border: 1px dashed #d9d9d9;
+				border-radius: 6px;
+				cursor: pointer;
+				position: relative;
+				overflow: hidden;
+			}
+			.avatar-uploader .el-upload:hover {
+				border-color: #409EFF;
+			}
+			.avatar-uploader-icon {
+				font-size: 28px;
+				color: #8c939d;
+				width: 100px;
+				height: 100px;
+				line-height: 100px;
+				text-align: center;
+			}
+			.avatar {
+				width: 178px;
+				height: 178px;
+				display: block;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div id="app">
+
+
+
+<!--			<el-button @click="handleCheck" type="primary">批量处理</el-button>-->
+			<el-input  style="width: 200px" v-model="seachName" placeholder="请输入用户名称"></el-input>
+			<el-button @click="updateTable" type="primary">筛选</el-button>
+			<el-button @click="clearSeach"  type="primary">清空筛选</el-button>
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+
+
+			<el-table :data="list" stripe border style="width: 100%">
+				<!--          选择框-->
+<!--				<el-table-column-->
+<!--						type="selection"-->
+<!--						width="55">-->
+<!--				</el-table-column>-->
+				<el-table-column label="用户ID" prop="uId" width="80">
+
+				</el-table-column>
+
+				<el-table-column  label="用户昵称" width="100" prop="uName">
+
+				</el-table-column>
+				<el-table-column label="用户账号" width="180" prop="uNumber">
+
+				</el-table-column>
+
+				<el-table-column label="性别" width="80" >
+					<template slot-scope="scope">
+						{{scope.row.uSex==0?'女':'男'}}
+					</template>
+				</el-table-column>
+
+				<el-table-column label="头像" width="180" prop="uSex">
+					<template slot-scope="scope">
+						<el-popover trigger="hover" placement="top">
+							<img style="max-width: 300px;max-height: 300px" :src="scope.row.uImg" alt="">
+							<div slot="reference" class="name-wrapper">
+								<img :src="scope.row.uImg" style="max-height: 40px" alt="">
+							</div>
+						</el-popover>
+					</template>
+				</el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+
+						<el-button size="mini" @click="handleEdit(scope.row)">修改
+						</el-button>
+
+						<el-button v-if="scope.row.uState=='0'" size="mini" type="danger" @click="handleDisable(scope.row.uId,'1')">禁用
+						</el-button>
+						<el-button v-if="scope.row.uState=='1'" size="mini" type="success" @click="handleDisable(scope.row.uId,'0')">启用
+						</el-button>
+
+						<el-button size="mini" type="danger" @click="handleDelete(scope.row.uId,'9')">删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+			<!--        分页功能-->
+			<div style="width: 100%">
+				<div class="block" >
+
+					<el-pagination
+							style="margin: 0 auto"
+							@size-change="size_change"
+							@current-change="current_change"
+							:current-page="current_page"
+							:page-sizes="[5, 10, 15, 20]"
+							:page-size="page_size"
+							layout="total, sizes, prev, pager, next, jumper"
+							:total="total">
+					</el-pagination>
+				</div>
+			</div>
+
+
+
+
+			<el-dialog title="修改用户信息" :close-on-press-escape="false" :close-on-click-modal="false"
+					   :visible.sync="showModView">
+				<el-form label-position="right" label-width="150px" >
+
+					<el-form-item   label="用户ID">
+						<el-input disabled v-model="modForm.uId" placeholder="请输入用户名称"></el-input>
+
+					</el-form-item>
+					<el-form-item   label="用户账号">
+						<el-input    disabled onKeyUp="value=value.replace(/[\W]/g,'')" v-model="modForm.uNumber" ></el-input>
+
+					</el-form-item>
+
+					<el-form-item   label="用户昵称">
+						<el-input  maxlength="10" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')" v-model="modForm.uName" placeholder="请输入用户昵称"></el-input>
+
+					</el-form-item>
+
+
+
+
+					<el-form-item   label="头像">
+						<el-upload
+								class="avatar-uploader"
+								action="/upload"
+								:show-file-list="false"
+								:on-success="handleAvatarSuccess"
+								:before-upload="beforeAvatarUpload">
+							<img style="max-width: 150px;max-height: 150px" v-if="modForm.uImg" :src="modForm.uImg" class="avatar">
+							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+						</el-upload>
+					</el-form-item>
+
+
+					<el-form-item   label="性别">
+						<el-radio-group v-model="modForm.uSex" size="medium">
+							<el-radio-button label="1"  >男</el-radio-button>
+							<el-radio-button label="0" >女</el-radio-button>
+
+						</el-radio-group>
+
+					</el-form-item>
+
+
+					<el-form-item   label="密码">
+						<el-input  maxlength="12" type="password" :show-password="true" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="modForm.uPassword"  placeholder="请输入用户密码"></el-input>
+
+					</el-form-item>
+
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="showModView=false">取 消</el-button>
+					<el-button @click="submitUserInfo"  type="primary">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+
+					seachName:null,
+					list:null,
+					showModView: false,
+					current_page:1 ,//当前页数
+					page_size: 10,//一页显示多少条
+					total: 0,//总共多少条
+					checkFBack:[],
+					pageNum:1,
+
+					modForm: {
+						uId:'',
+						uName: "",
+						uPassword: '',
+						uImg:'',
+						uSex:1
+					}
+
+				},
+
+				methods: {
+					handleSelectionChange(val) {//表格多选框
+						this.checkFBack = val;
+					},
+					current_change(e) {//跳转分页
+						this.current_page = e;
+						this.updateTable();
+					},
+					size_change(e) {//修改每页显示数量
+						this.page_size = e;
+						this.updateTable();
+					},
+					clearSeach(){//清空筛选
+						this.seachName=null;
+						this.updateTable();
+					},
+					setUserState(uId,state){
+
+						return new Promise((resolve, reject) => {
+							$.post("/admin/setUserState",{uId:uId,uState:state},(res)=>{
+								if(res=="success"){
+
+									resolve("success");
+								}else{
+									resolve("error");
+								}
+							});
+						})
+
+
+					},
+					handleDisable(uId,state){
+						let that=this;
+						this.$confirm(state==1?'禁用后该用户不可登录,是否禁用?':'启用该用户?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							let p=this.setUserState(uId,state);
+							p.then((result)=>{
+								if (result=='success'){
+									that.$notify({
+										message: state==1?'禁用成功':'启用成功',
+										type: 'success'
+									});
+									that.updateTable();
+								}
+							})
+
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+					},
+					handleDelete(uId,state) {
+
+						let that=this;
+						this.$confirm('确定删除?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							let p=this.setUserState(uId,state);
+							p.then((result)=>{
+								if (result=='success'){
+									that.$notify({
+										message: '删除成功',
+										type: 'success'
+									});
+									that.updateTable();
+								}
+							})
+
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+					},
+					updateTable() {
+
+						let that = this;
+
+						$.post("/admin/findAllUser", {pageNum:this.current_page,pageSize: this.page_size,uName:this.seachName},function(res) {
+
+							that.total=res.total;
+							that.list = res.list;
+							that.$notify({
+								type: "success",
+								message: '数据拉取成功',
+							})
+						})
+					},
+					handleEdit(row) {//修改用户信息
+
+						this.modForm={...row}
+						this.showModView=true;
+					},
+					submitUserInfo(){
+						if(this.modForm.uName.length<3){
+							this.$message({
+								message: '用户昵称不能小于3位',
+								type: 'warning'
+							});
+							return;
+						}
+						if(this.modForm.uPassword.length<6){
+							this.$message({
+								message: '密码不能小于6位',
+								type: 'warning'
+							});
+							return;
+						}
+						$.post("/admin/modUserInfo",this.modForm,(res)=>{
+							if (res=='success'){
+								this.$notify({
+									type: "success",
+									message: '修改成功',
+								})
+								this.showModView=false;
+								this.updateTable();
+							}
+						})
+					},
+					handleAvatarSuccess(res, file) {
+						this.imageUrl = URL.createObjectURL(file.raw);
+						this.modForm.uImg=res.Data.src;
+					},
+					beforeAvatarUpload(file) {
+
+						const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpeg';
+						const isLt2M = file.size / 1024 / 1024 < 2;
+
+						if (!isJPG) {
+							this.$message.error('上传图片只能是 JPG、JPEG和PNG 格式!');
+						}
+						if (!isLt2M) {
+							this.$message.error('上传图片大小不能超过 2MB!');
+						}
+						return isJPG && isLt2M;
+					},
+					handleCheck() {//删除选择的题目
+						let that = this;
+						if (this.checkFBack.length > 0) {
+							let str = '';
+							for (let i = 0; i < this.checkFBack.length; i++) {
+								str += this.checkFBack[i].fbackId + ','
+							}
+							str = str.slice(0, str.length - 1);
+
+							this.$confirm('处理这' + this.checkFBack.length + '条数据, 是否继续?', '提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
+								$.post("/admin/handleCheck", {checks: str}, function (res) {
+									if (res == 'success') {
+										that.$message({
+											type: 'success',
+											message: '处理成功!'
+										});
+										that.updateTable();
+										return;
+									}
+								})
+
+							}).catch(() => {
+								that.$message({
+									type: 'info',
+									message: '已取消删除'
+								});
+							});
+						}
+					},
+
+				},
+				created() {
+					this.updateTable();
+				}
+			});
+		</script>
+	</body>
+</html>

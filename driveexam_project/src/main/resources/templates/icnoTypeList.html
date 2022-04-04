@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+
+
+
+	</head>
+	<body>
+		<div id="app">
+
+
+
+			<el-button @click="showAddView=true" type="primary">添加图标顶级分类</el-button>
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+
+
+			<el-table
+					:data="list"
+					  border
+					:row-style="tableRowStyle"
+					style="width: 100%;"
+					row-key="icnoTypeId"
+					:tree-props="{children: 'children', hasChildren: true}"
+			>
+
+				<el-table-column label="ID" prop="icnoTypeId" width="80">
+
+				</el-table-column>
+
+				<el-table-column label="分类名称" width="300" prop="icnoTypeName">
+
+				</el-table-column>
+
+
+				<el-table-column label="图标数量" width="180" prop="icnos.length">
+					<template slot-scope="scope">
+						<span v-if="scope.row.isList==false">{{scope.row.icnos.length}}</span>
+						<span v-if="scope.row.isList">{{getTotal(scope.row)}}</span>
+					</template>
+				</el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+						<el-button size="mini" @click="showAddChildrenViewBefor(scope.row)" v-if="scope.row.isList==1">添加子分类</el-button>
+						<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+						<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+			<el-dialog title="添加图标分类" :close-on-press-escape="false" :close-on-click-modal="false"
+				:visible.sync="showAddView">
+				<el-form>
+					<el-form-item label="分类名称">
+						<el-input v-model="addForm.icnoTypeName" autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="是否为目录">
+						<el-radio-group  v-model="addForm.isList">
+							<el-radio-button label="1">是</el-radio-button>
+							<el-radio-button label="0">否</el-radio-button>
+						</el-radio-group>
+					</el-form-item>
+
+
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+
+					<el-button @click="showAddView = false;addForm.icnoTypeName='';addForm.isList=0;">取 消</el-button>
+					<el-button type="primary" @click="addSumbit">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+<!--			添加子分类弹窗-->
+			<el-dialog title="添加图标子分类" :close-on-press-escape="false" :close-on-click-modal="false"
+					   :visible.sync="showAddChildrenView">
+				<el-form>
+					<el-form-item label="子分类名称">
+						<el-input v-model="addChildrenForm.icnoTypeName" autocomplete="off"></el-input>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+
+					<el-button @click="showAddChildrenView = false;addChildrenForm.icnoTypeName='';">取 消</el-button>
+					<el-button type="primary" @click="addChildrenSumbit">确 定</el-button>
+				</div>
+			</el-dialog>
+
+			<el-dialog title="修改图标分类" :close-on-press-escape="false" :close-on-click-modal="false"
+				:visible.sync="showModView">
+				<el-form>
+<!--					<el-form-item label="章节ID">-->
+<!--						<el-input :disabled="true" v-model="modForm.knowId" autocomplete="off"></el-input>-->
+<!--					</el-form-item>-->
+					<el-form-item label="分类名称">
+						<el-input v-model="modForm.icnoTypeName" autocomplete="off"></el-input>
+					</el-form-item>
+
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="showModView=false">取 消</el-button>
+					<el-button type="primary" @click="updateKnowPoint">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					showAddView: false,
+					list: null,
+					showModView: false,
+					addForm: {
+						icnoTypeName: "",
+						isList:0,
+						icnoParent:0,
+						level:1
+					},
+					showAddChildrenView: false,
+					addChildrenForm: {
+						icnoTypeName: "",
+						isList:0,
+						icnoParent:0,
+						level:2
+					},
+					modForm: {
+						icnoTypeName:'',
+						icnoTypeId:0
+					}
+
+				},
+
+				methods: {
+					getTotal(row){
+						let sum=0;
+						for(let item of row.children){sum+=item.icnos.length}
+						return sum;
+					},
+					showAddChildrenViewBefor(row){
+
+						this.addChildrenForm.icnoParent=row.icnoTypeId;
+						this.showAddChildrenView=true;
+					},
+					handleEdit(index, row) {
+						this.modForm={...row};
+						this.showModView = true;
+
+					},
+					handleDelete(index, row) {
+						let that = this;
+						if(row.isList && row.children.length>0){
+							this.$notify.error({
+								message: '当前分类下有子类,请先删除所有子类!'
+							});
+							return;
+						}
+						if(row.isList==false && row.icnos.length>0){
+							this.$notify.error({
+								message: '当前分类下仍有图标无法删除,请先删除所有图标!'
+							});
+							return;
+						}
+						//
+						// if (row.icnos.length > 0 ||  row.children.length>0) {
+						// 	this.$notify.error({
+						// 		message: '只能删除图标数量为0或者没有子分类的项!'
+						// 	});
+						// 	return;
+						// }
+
+						this.$confirm('确定删除?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							$.post("/admin/deleteIcnoTypeById", {
+								'icnoTypeId': row.icnoTypeId
+							}, function(res) {
+								if (res == "success") {
+									that.$notify({
+										title: '成功',
+										message: '删除成功',
+										type: 'success'
+									});
+									that.updateTable();
+									return;
+
+								}
+							})
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+
+					},
+					updateTable() {
+
+						let that = this;
+
+						$.post("/api/findTopIcnoSType", function(res) {
+
+							that.list = res.top;
+							for(let item of that.list){
+								item.isList=item.isList==1?true:false;
+							}
+
+
+							that.$message({
+								type: "success",
+								message: '数据拉取成功',
+							})
+						})
+					},
+					addSumbit() {//添加分类
+						let that = this;
+						$.post("/admin/addIcnoType", {
+							...this.addForm
+						}, function(res) {
+
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '添加成功',
+									type: 'success'
+								});
+								that.showAddView = false;
+								that.updateTable();
+								that.addForm.icnoTypeName='';
+								that.addForm.isList=0;
+								return;
+							}
+							alert("错误");
+						})
+					},
+
+					addChildrenSumbit(){//添加子分类
+						let that = this;
+						$.post("/admin/addIcnoType", {
+							...this.addChildrenForm
+						}, function(res) {
+
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '添加成功',
+									type: 'success'
+								});
+								that.showAddChildrenView = false;
+								that.addChildrenForm.icnoTypeName='';
+								that.updateTable();
+								return;
+							}
+							alert("错误");
+						})
+					},
+					updateKnowPoint() {
+						let that = this;
+						$.post("/admin/modIcnoTypeById", {
+							icnoTypeId:this.modForm.icnoTypeId,
+							icnoTypeName:this.modForm.icnoTypeName,
+							icnoParent:this.modForm.icnoParent,
+							isList:this.modForm.isList,
+							level:this.modForm.level
+						}, function(res) {
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '修改成功',
+									type: 'success'
+								});
+								that.showModView = false;
+								that.updateTable();
+								return;
+							}
+						})
+					},
+					tableRowStyle({row, rowIndwx}){
+						if (row.level==2 && row.isList==0){
+							return {'background-color':'AliceBlue'};
+						}
+						return ""
+					}
+				},
+				created() {
+					this.updateTable();
+				}
+			});
+		</script>
+	</body>
+</html>

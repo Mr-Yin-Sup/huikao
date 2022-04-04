@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+
+
+
+	</head>
+	<body>
+		<div id="app">
+
+
+
+			<el-button @click="showAddView=true" type="primary">添加章节</el-button>
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+
+
+			<el-table :data="chapters" stripe border style="width: 100%">
+				<el-table-column label="章节ID" prop="chapterId" width="180">
+
+				</el-table-column>
+				<el-table-column label="所属科目" prop="km" width="180">
+
+				</el-table-column>
+				<el-table-column label="章节名称" width="300" prop="chapterName">
+
+				</el-table-column>
+				<el-table-column label="所属车型" width="180" prop="chapterCar">
+
+				</el-table-column>
+
+				<el-table-column label="题目数量" width="180" prop="count">
+
+				</el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+						<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+						<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+			<el-dialog title="添加章节" :close-on-press-escape="false" :close-on-click-modal="false"
+				:visible.sync="showAddView">
+				<el-form>
+					<el-form-item label="章节名称">
+						<el-input v-model="addForm.chapterName" autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="所属科目">
+						<el-radio-group v-model="addForm.chapterKm">
+							<el-radio-button label="1">科目一</el-radio-button>
+							<el-radio-button label="4">科目四</el-radio-button>
+						</el-radio-group>
+					</el-form-item>
+
+					<el-form-item label="所属车型">
+						<el-checkbox-group v-model="addForm.answerBox">
+							<!--                        <el-checkbox-button v-for="item in boxOption" :label="item" :key="item">{{item}}</el-checkbox-button>-->
+							<el-checkbox-button label="1" key="1">小车</el-checkbox-button>
+							<el-checkbox-button label="2" key="2">货车</el-checkbox-button>
+							<el-checkbox-button label="3" key="3">客车</el-checkbox-button>
+							<el-checkbox-button label="4" key="4">摩托车</el-checkbox-button>
+						</el-checkbox-group>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="showAddView = false;initAddForm()">取 消</el-button>
+					<el-button type="primary" @click="addChapter">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+			<el-dialog title="修改章节" :close-on-press-escape="false" :close-on-click-modal="false"
+				:visible.sync="showModView">
+				<el-form>
+					<el-form-item label="章节ID">
+						<el-input :disabled="true" v-model="modForm.chapterId" autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="章节名称">
+						<el-input v-model="modForm.chapterName" autocomplete="off"></el-input>
+					</el-form-item>
+					<el-form-item label="所属科目">
+						<el-radio-group v-model="modForm.chapterKm">
+							<el-radio-button label="1">科目一</el-radio-button>
+							<el-radio-button label="4">科目四</el-radio-button>
+						</el-radio-group>
+					</el-form-item>
+
+					<el-form-item label="所属车型">
+						<el-checkbox-group v-model="modForm.answerBox">
+							<el-checkbox-button label="1" key="1">小车</el-checkbox-button>
+							<el-checkbox-button label="2" key="2">货车</el-checkbox-button>
+							<el-checkbox-button label="3" key="3">客车</el-checkbox-button>
+							<el-checkbox-button label="4" key="4">摩托车</el-checkbox-button>
+						</el-checkbox-group>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="showModView=false">取 消</el-button>
+					<el-button type="primary" @click="updateChapter">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					boxOption: ["小车", "货车", "客车", "摩托车"],
+					showAddView: false,
+					chapters: null,
+					showModView: false,
+					addForm: {
+						answerBox: ["1"],
+						chapterName: "",
+						chapterKm: 1
+					},
+					modForm: {
+						answerBox: ["1"],
+						chapterName: "",
+						chapterKm: 1,
+						chapterId: null
+					}
+
+				},
+
+				methods: {
+					handleEdit(index, row) {
+						this.modForm.chapterId = row.chapterId;
+						this.modForm.chapterName = row.chapterName;
+						if (row.km == "科目一") {
+							this.modForm.chapterKm = 1;
+						} else {
+							this.modForm.chapterKm = 4;
+						}
+						let strs = row.chapterCar.split('、');
+						for (let i = 0; i < strs.length; i++) {
+							if (strs[i] == '小车') strs[i] = '1';
+							if (strs[i] == '货车') strs[i] = '2';
+							if (strs[i] == '客车') strs[i] = '3';
+							if (strs[i] == '摩托车') strs[i] = '4';
+						}
+
+						this.modForm.answerBox = strs;
+						this.showModView = true;
+
+
+
+					},
+					handleDelete(index, row) {
+						let that = this;
+
+						if (row.count > 0) {
+							this.$notify.error("只能删除题目数量为0的章节!");
+							return;
+						}
+
+						this.$confirm('确定删除?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							$.post("/admin/deleteChatper", {
+								'chapterId': row.chapterId
+							}, function(res) {
+								if (res == "success") {
+									that.$notify({
+										title: '成功',
+										message: '删除成功',
+										type: 'success'
+									});
+									that.updateTable();
+									return;
+
+								}
+
+								that.$confirm(res, '提示', {
+									confirmButtonText: '确定',
+									cancelButtonText: '取消',
+									type: 'error',
+									center: true
+								})
+							})
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+
+					},
+					updateTable() {
+
+						let that = this;
+
+						$.post("/admin/findAllChapter", function(res) {
+							console.log(res)
+							that.chapters = res;
+							that.$message({
+								type: "success",
+								message: '数据拉取成功',
+							})
+						})
+					},
+					addChapter() {
+						let str = this.addForm.answerBox.sort().toString().replace(/,/g, '');
+						let that = this;
+
+
+						$.post("/admin/addChapter", {
+							'chapterName': this.addForm.chapterName,
+							'km': this.addForm.chapterKm,
+							'chapterCar': str
+						}, function(res) {
+
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '添加成功',
+									type: 'success'
+								});
+								that.showAddView = false;
+								that.initAddForm();
+								that.updateTable();
+								return;
+							}
+							alert("错误");
+						})
+					},
+					initAddForm() {
+						this.addForm.chapterName = null;
+						this.addForm.answerBox = ['1'];
+						this.addForm.chapterKm = 1;
+					},
+					updateChapter() {
+						let that = this;
+						$.post("/admin/modChapter", {
+							'chapterCar': this.modForm.answerBox.toString().replace(/,/g, ''),
+							'km': this.modForm.chapterKm,
+							'chapterName': this.modForm.chapterName,
+							'chapterId': this.modForm.chapterId
+						}, function(res) {
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '修改成功',
+									type: 'success'
+								});
+								that.showModView = false;
+								that.updateTable();
+								return;
+							}
+							alert("错误");
+						})
+					}
+				},
+				created() {
+					this.updateTable();
+				}
+			});
+		</script>
+	</body>
+</html>

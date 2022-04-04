@@ -1,0 +1,79 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    database: 0
+    password:
+    port: 6379
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 8
+        min-idle: 0
+        max-wait: 2000 #最大等待时间2s
+  mvc:
+    static-path-pattern: /**
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/drive_exam?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone =Asia/Shanghai&allowMultiQueries=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+
+    initialSize: 100
+    minIdle: 20
+    maxActive: 200
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+#  #开启热部署
+#  devtools:
+#    restart:
+#      enabled: true  #设置开启热部署
+#      additional-paths: src/main/java #重启目录
+#      exclude: WEB-INF/**
+#  freemarker:
+#    cache: false    #页面不加载缓存，修改即时生效
+
+
+server:
+  port: 8881
+#  custom:
+#    httpPort: 8880
+#  #https配置
+#  ssl:
+#    key-store: classpath:mryin.top.pfx
+#    key-store-type: PKCS12
+#    key-store-password: 123456
+
+mybatis:
+  # ��Ҫ����
+  type-aliases-package: cn.mryin.deiveexam.pojo
+  mapper-locations: classpath:mapper/*.xml
+
+
+
+
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  page-size-zero: ture
+
+
+token:
+  SECRET: mryin
+#  过期时间一天
+  EXPIRE: 86400000

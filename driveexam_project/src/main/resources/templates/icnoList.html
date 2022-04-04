@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+		<style>
+			.avatar-uploader .el-upload {
+				border: 1px dashed #d9d9d9;
+				border-radius: 6px;
+				cursor: pointer;
+				position: relative;
+				overflow: hidden;
+			}
+			.avatar-uploader .el-upload:hover {
+				border-color: #409EFF;
+			}
+			.avatar-uploader-icon {
+				font-size: 28px;
+				color: #8c939d;
+				width: 178px;
+				height: 178px;
+				line-height: 178px;
+				text-align: center;
+			}
+			.avatar {
+				width: 178px;
+				height: 178px;
+				display: block;
+			}
+		</style>
+
+
+	</head>
+	<body>
+		<div id="app">
+
+
+
+			<span>筛选--</span>
+			<span>分类:</span>
+			<el-select v-model="searchList.icnoTypeId" placeholder="请选择">
+				<el-option label="不选择" :value="null"></el-option>
+				<el-option v-if="item.isList==0 && item.icnoTypeId!=0" v-for="item in icnoTypes" :label="item.icnoTypeName" :value="item.icnoTypeId"></el-option>
+			</el-select>
+			<el-input v-model="searchList.icnoName" style="width: 200px" placeholder="请输入图标名称"></el-input>
+			<el-button @click="search" type="primary">筛选</el-button>
+			<el-button @click="clearSeach" type="primary">清空筛选</el-button>
+
+			<el-button @click="showAddIcnoView" type="primary">添加图标</el-button>
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+
+
+			<el-table :data="icnos" stripe border style="width: 100%">
+				<el-table-column label="图标ID" prop="icnoId" width="100">
+
+				</el-table-column>
+
+				<el-table-column label="图标名称" width="180" prop="icnoName">
+
+				</el-table-column>
+
+
+				<el-table-column label="图标图片" width="100" >
+
+					<template slot-scope="scope">
+						<el-popover trigger="hover" placement="top">
+							<img style="max-width: 300px;max-height: 300px" :src="scope.row.icnoImg" alt="">
+							<div slot="reference" class="name-wrapper">
+								<img :src="scope.row.icnoImg" style="max-width: 50px;max-height: 50px" alt="">
+							</div>
+						</el-popover>
+					</template>
+				</el-table-column>
+
+				<el-table-column label="图标所属分类" width="180" prop="icnoType.icnoTypeName">
+
+				</el-table-column>
+
+				<el-table-column label="所属父级分类" width="180" prop="icnoType.parentType.icnoTypeName">
+
+				</el-table-column>
+
+				<el-table-column label="操作" width="150">
+					<template slot-scope="scope">
+						<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+						<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
+						</el-button>
+					</template>
+				</el-table-column>
+
+
+			</el-table>
+
+			<!--        分页功能-->
+			<div style="width: 100%">
+				<div class="block" >
+
+					<el-pagination
+							style="margin: 0 auto"
+							@size-change="size_change"
+							@current-change="current_change"
+							:current-page="current_page"
+							:page-sizes="[5, 10, 15, 20]"
+							:page-size="page_size"
+							layout="total, sizes, prev, pager, next, jumper"
+							:total="total">
+					</el-pagination>
+				</div>
+			</div>
+
+			<el-dialog title="添加图标"
+					   :show-close="false"
+					   v-if="showAddView"
+					   :close-on-press-escape="false"
+					   :close-on-click-modal="false"
+				:visible.sync="showAddView">
+				<el-form label-position="right" label-width="250px" >
+
+					<el-form-item label="图标一级分类">
+						<el-select v-model="addForm.topIcnoType" @change="topIcnoTypeChange">
+							<el-option
+									:style="{display: item.icnoTypeId!='0'?'block':'none'}"
+									v-for="item in topIcnoTypeList"
+									:label="item.icnoTypeName"
+									:key="item.icnoTypeId"
+									:value="item.icnoTypeId">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item v-if="twoIcnoTypeList!=null"  label="图标二级分类">
+						<el-select v-model="addForm.icnoTypeId">
+							<el-option
+									v-for="item in twoIcnoTypeList"
+									:label="item.icnoTypeName"
+									:key="item.icnoTypeId"
+									:value="item.icnoTypeId">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item v-if="twoIcnoTypeList!=null"  label="图标名称">
+						<el-input v-model="addForm.icnoName" placeholder="请输入图标名称"></el-input>
+
+					</el-form-item>
+
+					<el-form-item  v-if="addForm.icnoTypeId!=null" label="图片">
+						<el-upload
+								class="avatar-uploader"
+								action="/upload"
+								:show-file-list="false"
+								:on-success="handleAvatarSuccess"
+								:before-upload="beforeAvatarUpload">
+							<img v-if="imageUrl" :src="imageUrl" class="avatar">
+							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+						</el-upload>
+					</el-form-item>
+
+					<el-form-item v-if="addForm.icnoTypeId!=null"  label="图标详解">
+						<el-input
+								type="textarea"
+								:rows="2"
+								placeholder="请输入内容"
+								v-model="addForm.icnoExplain">
+						</el-input>
+
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="closeAddView">取 消</el-button>
+					<el-button type="primary"  v-if="addForm.icnoTypeId!=null" @click="addIcno">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+
+
+			<el-dialog title="修改图标" :close-on-press-escape="false" :close-on-click-modal="false"
+				:visible.sync="showModView">
+				<el-form label-position="right" label-width="250px" >
+
+					<el-form-item label="图标一级分类">
+						<el-select v-model="modForm.topIcnoType" @change="topIcnoTypeChange">
+							<el-option
+									:style="{display: item.icnoTypeId!='0'?'block':'none'}"
+									v-for="item in topIcnoTypeList"
+									:label="item.icnoTypeName"
+									:key="item.icnoTypeId"
+									:value="item.icnoTypeId">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item  label="图标二级分类">
+						<el-select v-model="modForm.icnoTypeId">
+							<el-option
+									v-for="item in twoIcnoTypeList"
+									:label="item.icnoTypeName"
+									:key="item.icnoTypeId"
+									:value="item.icnoTypeId">
+							</el-option>
+						</el-select>
+					</el-form-item>
+
+					<el-form-item   label="图标名称">
+						<el-input v-model="modForm.icnoName" placeholder="请输入图标名称"></el-input>
+
+					</el-form-item>
+
+					<el-form-item  v-if="modForm.icnoTypeId!=null" label="图片">
+						<el-upload
+								class="avatar-uploader"
+								action="/upload"
+								:show-file-list="false"
+								:on-success="handleAvatarSuccess"
+								:before-upload="beforeAvatarUpload">
+							<img v-if="imageUrl" :src="imageUrl" class="avatar">
+							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+						</el-upload>
+					</el-form-item>
+
+					<el-form-item v-if="modForm.icnoTypeId!=null"  label="图标详解">
+						<el-input
+								type="textarea"
+								:rows="2"
+								placeholder="请输入内容"
+								v-model="modForm.icnoExplain">
+						</el-input>
+
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="showModView=false">取 消</el-button>
+					<el-button type="primary" @click="updateIcon">确 定</el-button>
+				</div>
+			</el-dialog>
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					current_page:1 ,//当前页数
+					page_size: 10,//一页显示多少条
+					total: 100,//总共多少条
+					showAddView: false,
+					topIcnoTypeList:null,
+					twoIcnoTypeList:null,
+					icnoTypes:null,
+					icnos: null,
+					imageUrl: '',
+					showModView: false,
+					addForm: {
+						topIcnoType:null,//添加窗口顶级分类
+						twoIcnoType:null,//添加窗口二级分类
+						icnoExplain:null,//图标解释
+						icnoImg:null,//图标图片路径
+						icnoName:null,//图标名字
+						icnoTypeId:null//图标类型id
+					},
+					modForm: {
+                        topIcnoType:null,//添加窗口顶级分类
+                        twoIcnoType:null,//添加窗口二级分类
+                        icnoExplain:null,//图标解释
+                        icnoImg:null,//图标图片路径
+                        icnoName:null,//图标名字
+                        icnoTypeId:null//图标类型id
+					},
+					searchList:{
+						icnoName:null,
+						icnoTypeId:null,
+					}
+
+				},
+
+				methods: {
+					closeAddView(){
+						this.showAddView = false;
+						this.addForm.twoIcnoType=null;
+						this.twoIcnoTypeList=null;
+						this.addForm.topIcnoType=null;
+						this.addForm.twoIcnoType=null;
+						this.addForm.icnoExplain=null;
+						this.addForm.icnoImg=null;
+						this.addForm.icnoName=null;
+						this.addForm.icnoTypeId=null;
+						this.imgUrl='';
+					},
+					clearSeach(){//清空筛选
+						this.searchList.icnoName='';
+						this.searchList.icnoTypeId='';
+					},
+					//当添加图标窗口的顶级分类选择后
+					topIcnoTypeChange(e){
+
+						this.twoIcnoTypeList=this.screenIcnoType(this.icnoTypes,'icnoParent',e);
+
+						if (this.twoIcnoTypeList.length==0){
+							this.twoIcnoTypeList=this.screenIcnoType(this.icnoTypes,'icnoTypeId',0);
+						}
+						this.addForm.icnoTypeId = this.twoIcnoTypeList[0].icnoTypeId;
+						this.modForm.icnoTypeId = this.twoIcnoTypeList[0].icnoTypeId;
+
+
+					},
+					showAddIcnoView(){
+						this.twoIcnoTypeList=null;
+						this.imageUrl='';
+						let that=this;
+						$.post("/admin/findAllIcnoType",function (res) {
+
+							that.icnoTypes=res;
+							that.topIcnoTypeList=that.screenIcnoType(res,'icnoParent',0).filter((item)=>{return item.icnoTypeName !='顶级';})
+
+							that.showAddView=true;
+						})
+					},
+					handleEdit(index, row) {
+
+						let that=this;
+						$.post("/admin/findAllIcnoType",function (res) {
+
+							that.icnoTypes=res;
+
+
+							that.topIcnoTypeList=that.screenIcnoType(res,'icnoParent',0)
+							if (row.icnoType.icnoParent==0){
+								that.twoIcnoTypeList=that.screenIcnoType(res,'icnoTypeId',0);
+							}else {
+								that.twoIcnoTypeList=that.screenIcnoType(that.icnoTypes,'icnoParent',row.icnoType.icnoParent);
+
+							}
+
+
+							if (that.twoIcnoTypeList.length==0){
+								that.twoIcnoTypeList=that.screenIcnoType(that.icnoTypes,'icnoTypeId',0);
+							}
+
+							// that.modForm.icnoTypeId=that.twoIcnoTypeList[0].icnoTypeId;
+
+
+							that.modForm.icnoExplain = row.icnoExplain;
+							that.modForm.icnoId = row.icnoId;
+							that.modForm.icnoName = row.icnoName;
+							if(row.icnoType.icnoParent==0){
+								that.modForm.icnoTypeId=0;
+							}else{
+							that.modForm.icnoTypeId = row.icnoTypeId;
+							}
+							that.imageUrl=row.icnoImg;
+							that.modForm.icnoImg=row.icnoImg;
+							if(row.icnoType.icnoParent==0){
+
+								that.modForm.topIcnoType=row.icnoTypeId;
+							}else{
+							that.modForm.topIcnoType=row.icnoType.parentType.icnoTypeId;
+							}
+							that.showModView=true;
+						})
+
+
+
+
+
+					},
+					handleDelete(index, row) {
+						this.$confirm('确认删除?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							let that=this;
+							$.post("/admin/delIcno",{'icnoId':row.icnoId},function (res) {
+								if (res == "success") {
+									that.$notify({
+										title: '成功',
+										message: '删除成功',
+										type: 'success'
+									});
+									that.search();
+									return;
+								}
+								alert("错误");
+							} )
+						}).catch(() => {
+							this.$message({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+
+
+
+					},
+					updateTable() {
+
+						let that = this;
+
+						$.post("/admin/findAllIcno", {'pageNum': that.current_page, 'pageSize': that.page_size},function(res) {
+
+							that.icnos = res.list;
+							that.total=res.total;
+							that.$notify({
+								title: '成功',
+								message: '数据拉取成功!',
+								type: 'success'
+							});
+						})
+					},
+					search(){
+						let that=this;
+						this.searchList.pageNum=this.current_page;
+						this.searchList.pageSize=this.page_size;
+
+						$.post("/admin/seachIcno",this.searchList, function(res) {
+
+
+							that.icnos=res.list;
+							that.total=res.total;
+
+								that.$notify({
+									title: '成功',
+									message: '筛选成功',
+									type: 'success'
+								});
+
+								return;
+
+
+						})
+					},
+					addIcno() {
+						let that = this;
+						if (this.addForm.icnoTypeId==0)this.addForm.icnoTypeId=this.addForm.topIcnoType;
+						$.post("/admin/addIcno", this.addForm, function(res) {
+
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '添加成功',
+									type: 'success'
+								});
+								that.showAddView = false;
+								that.addForm.topIcnoType=null;//添加窗口顶级分类
+								that.addForm.twoIcnoType=null;//添加窗口二级分类
+								that.addForm.icnoExplain=null;//图标解释
+								that.addForm.icnoImg=null;//图标图片路径
+								that.addForm.icnoName=null;//图标名字
+								that.addForm.icnoTypeId=null;//图标类型id
+								that.search();
+								return;
+							}
+							alert("错误");
+						})
+					},
+					updateIcon() {
+						let that = this;
+
+                        if (this.modForm.icnoTypeId==0)this.modForm.icnoTypeId=this.modForm.topIcnoType;
+						$.post("/admin/modIcno", this.modForm, function(res) {
+							if (res == "success") {
+								that.$notify({
+									title: '成功',
+									message: '修改成功',
+									type: 'success'
+								});
+								that.showModView = false;
+								that.search();
+								return;
+							}
+							alert("错误");
+						})
+					},
+					handleAvatarSuccess(res, file) {
+
+						this.imageUrl = URL.createObjectURL(file.raw);
+
+						this.addForm.icnoImg=res.Data.src;
+						this.modForm.icnoImg=res.Data.src;
+					},
+					beforeAvatarUpload(file) {
+
+						const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpeg';
+						const isLt2M = file.size / 1024 / 1024 < 2;
+
+						if (!isJPG) {
+							this.$message.error('上传图片只能是 JPG、JPEG和PNG 格式!');
+						}
+						if (!isLt2M) {
+							this.$message.error('上传图片大小不能超过 2MB!');
+						}
+						return isJPG && isLt2M;
+					},
+					screenIcnoType(list,name,tj){
+						return list.filter(function (item) {
+							 return item[name]==tj;
+						});
+					},
+					current_change(e) {//跳转分页
+						this.current_page = e;
+						this.search();
+					},
+					size_change(e) {//修改每页显示数量
+						this.page_size = e;
+						this.search();
+					},
+					rowClick(row, column, event) {//鼠标点击展开一行数据
+
+						this.$refs.refTable.toggleRowExpansion(row);
+					},
+				},
+				created() {
+					this.search();
+					let that=this;
+					$.post("/admin/findAllIcnoType",function (res) {
+
+						that.icnoTypes=res;
+
+					})
+				},
+
+			});
+		</script>
+	</body>
+</html>

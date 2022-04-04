@@ -1,0 +1,113 @@
+    $boxWidth:580rpx;
+    $mainColor: #1eaae8;
+	.wrap{
+		background-color: #f8f8f8;
+	}
+	.logoimg{
+		width: 160rpx;
+		height: 160rpx;
+		display: none;
+	}
+	.placeholder{
+		color: #DCDFE6;
+	}
+	.main-color{
+		color: $mainColor;
+	}
+	.underline{
+		text-decoration: underline;
+	}
+	.tabs{
+		width: $boxWidth;
+		height: 90rpx;
+		background-color: #fff;
+		border-radius: 50rpx;
+		position: relative;
+		z-index: 999;
+		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+		 margin-top: -50rpx;
+	}
+	.tabs .flex-1{
+		
+	}
+	.btns{
+		width: $boxWidth;
+		margin-top: 80rpx;
+	}
+	.qbtn{
+		height: 100rpx;
+		border-radius: 50rpx;
+		background-color: $mainColor;
+		background-image: linear-gradient(90deg, #35e8e8,#1ba3e8);
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		align-items: center;
+		justify-content: center;
+		// box-shadow: 0 1px 0 2px rgba(0,0,0,0.05);
+	}
+	.btn-text-color{
+		color: #ffffff;
+	}
+	.nav-text-color{
+		color: #999999;
+	}
+	.label{
+		width: 120rpx;
+		display: none;
+	}
+	.label_icon{
+		width: 38rpx;
+		height: 38rpx;
+		display: block;
+		margin-right: 30rpx;
+	}
+	.label_fgs{
+		height: 36rpx;
+		width: 1px;
+		border-left:1px solid #E5E5E5;
+		margin-right: 30rpx;
+		display: none;
+	}
+  .topbox{
+	  width: 100%;
+	  height: 400rpx;
+	  background-color: $mainColor;
+	  background-image: url(/static/images/bg03.png);
+	  background-size: 100%;
+	 
+  }
+  .form{
+	  width: $boxWidth;
+  }
+  .form-item{
+	  padding: 30rpx 0rpx;
+	
+	  border-bottom: 1px solid #eee;
+	  // background-color: #ffffff;
+  }
+  .active{
+	  position: relative;
+	  background-color: $mainColor;
+	  background-image: linear-gradient(90deg, #35e8e8,#1ba3e8);
+	  border-radius: 50rpx;
+  }
+  .active::after{
+	  // content: "";
+	  // position: absolute;
+	  // bottom:0;
+	  // width: 60rpx;
+	  // height: 8rpx;
+	  // border-radius: 4rpx;
+	  // background-color: $mainColor;
+  }
+  .curtext{
+	  color: #ffffff;
+  }
+  .yzm{
+	  // background-color: $mainColor;
+	  // color: #ffffff;
+	  padding-left: 20rpx;
+	  padding-right: 20rpx;
+	  border-radius: 10rpx;
+  }

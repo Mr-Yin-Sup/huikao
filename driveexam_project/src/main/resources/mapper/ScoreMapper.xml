@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.ScoreMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.Score">
+    <id column="score_id" jdbcType="INTEGER" property="scoreId" />
+    <result column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="km" jdbcType="CHAR" property="km" />
+    <result column="car_type" jdbcType="CHAR" property="carType" />
+    <result column="score" jdbcType="TINYINT" property="score" />
+    <result column="use_time" jdbcType="TIME" property="useTime" />
+    <result column="exam_time" jdbcType="TIMESTAMP" property="examTime" />
+    <result column="success_count" jdbcType="TINYINT" property="successCount" />
+    <result column="error_count" jdbcType="TINYINT" property="errorCount" />
+    <result column="unan" jdbcType="TINYINT" property="unan" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    score_id, u_id, km, car_type, score, use_time, exam_time, success_count, error_count, 
+    unan
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from score
+    where score_id = #{scoreId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from score
+    where score_id = #{scoreId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.Score">
+    insert into score (score_id, u_id, km, 
+      car_type, score, use_time, 
+      exam_time, success_count, error_count, 
+      unan)
+    values (#{scoreId,jdbcType=INTEGER}, #{uId,jdbcType=INTEGER}, #{km,jdbcType=CHAR}, 
+      #{carType,jdbcType=CHAR}, #{score,jdbcType=TINYINT}, #{useTime,jdbcType=TIME}, 
+      #{examTime,jdbcType=TIMESTAMP}, #{successCount,jdbcType=TINYINT}, #{errorCount,jdbcType=TINYINT}, 
+      #{unan,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.Score">
+    insert into score
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="scoreId != null">
+        score_id,
+      </if>
+      <if test="uId != null">
+        u_id,
+      </if>
+      <if test="km != null">
+        km,
+      </if>
+      <if test="carType != null">
+        car_type,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="useTime != null">
+        use_time,
+      </if>
+      <if test="examTime != null">
+        exam_time,
+      </if>
+      <if test="successCount != null">
+        success_count,
+      </if>
+      <if test="errorCount != null">
+        error_count,
+      </if>
+      <if test="unan != null">
+        unan,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="scoreId != null">
+        #{scoreId,jdbcType=INTEGER},
+      </if>
+      <if test="uId != null">
+        #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="km != null">
+        #{km,jdbcType=CHAR},
+      </if>
+      <if test="carType != null">
+        #{carType,jdbcType=CHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=TINYINT},
+      </if>
+      <if test="useTime != null">
+        #{useTime,jdbcType=TIME},
+      </if>
+      <if test="examTime != null">
+        #{examTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="successCount != null">
+        #{successCount,jdbcType=TINYINT},
+      </if>
+      <if test="errorCount != null">
+        #{errorCount,jdbcType=TINYINT},
+      </if>
+      <if test="unan != null">
+        #{unan,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.Score">
+    update score
+    <set>
+      <if test="uId != null">
+        u_id = #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="km != null">
+        km = #{km,jdbcType=CHAR},
+      </if>
+      <if test="carType != null">
+        car_type = #{carType,jdbcType=CHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=TINYINT},
+      </if>
+      <if test="useTime != null">
+        use_time = #{useTime,jdbcType=TIME},
+      </if>
+      <if test="examTime != null">
+        exam_time = #{examTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="successCount != null">
+        success_count = #{successCount,jdbcType=TINYINT},
+      </if>
+      <if test="errorCount != null">
+        error_count = #{errorCount,jdbcType=TINYINT},
+      </if>
+      <if test="unan != null">
+        unan = #{unan,jdbcType=TINYINT},
+      </if>
+    </set>
+    where score_id = #{scoreId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.Score">
+    update score
+    set u_id = #{uId,jdbcType=INTEGER},
+      km = #{km,jdbcType=CHAR},
+      car_type = #{carType,jdbcType=CHAR},
+      score = #{score,jdbcType=TINYINT},
+      use_time = #{useTime,jdbcType=TIME},
+      exam_time = #{examTime,jdbcType=TIMESTAMP},
+      success_count = #{successCount,jdbcType=TINYINT},
+      error_count = #{errorCount,jdbcType=TINYINT},
+      unan = #{unan,jdbcType=TINYINT}
+    where score_id = #{scoreId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findScoresByUserAndKmAndCar" parameterType="cn.mryin.driveexam.pojo.Score" resultMap="BaseResultMap">
+    select * from score where score.u_id=#{uId} and km=#{km} and car_type=#{carType} ORDER BY exam_time desc
+  </select>
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+
+<!-- 根据数据库表生成实体类及mapper -->
+<generatorConfiguration>
+    <!-- <properties resource="db.properties" /> -->
+    <classPathEntry
+            location="C:\Users\Lenovo\.m2\repository\mysql\mysql-connector-java\8.0.27\mysql-connector-java-8.0.27.jar" />
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <!-- 删除代码中带有 代码生成器的注释信息 -->
+            <property name="suppressAllComments" value="true" />
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressDate" value="true" />
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/drive_exam?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=TRUE"
+                        userId="root" password="root" >
+            <property name="useInformationSchema" value="true"/>
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 生成模型的包名和位置 -->
+        <javaModelGenerator targetPackage="cn.mryin.driveexam.pojo"
+                            targetProject="src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="false" />
+            <!-- <property name="trimStrings" value="true" /> -->
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="src\main\resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <javaClientGenerator targetPackage="cn.mryin.driveexam.mapper"
+                             targetProject="src\main\java" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+
+
+
+        <table  tableName="subject"
+               domainObjectName="Subject" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+<!--            <columnOverride column="squestions" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+<!--            <columnOverride column="sexplain" javaType="java.lang.String" jdbcType="VARCHAR" />-->
+
+
+        </table>
+        <table  tableName="car"
+               domainObjectName="Car" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+        <table tableName="chapter"
+               domainObjectName="Chapter" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="icno"
+               domainObjectName="Icno" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="icno_type"
+               domainObjectName="IcnoType" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="know_points"
+               domainObjectName="KnowPoints" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="score"
+               domainObjectName="Score" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+
+        <table tableName="subject_proportion"
+               domainObjectName="SubjectProportion" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+
+        <table tableName="user"
+               domainObjectName="User" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+        </table>
+    </context>
+</generatorConfiguration>

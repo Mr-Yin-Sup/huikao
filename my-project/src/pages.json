@@ -1,0 +1,179 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	
+		{
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/mine/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/c-userinfo/c-userinfo",
+			"style": {
+				"navigationBarTitleText": "修改信息"
+			}
+			
+		},
+		{
+			"path": "pages/dati/index",
+			"style": {
+				"navigationBarTitleText": "答题"
+			}
+		},
+		{
+			"path": "pages/errSubject/index",
+			"style": {
+				"navigationBarTitleText": "我的错题"
+			}
+		},
+		{
+			"path": "pages/suijidati/index",
+			"style": {
+				"navigationBarTitleText": "随机答题"
+			}
+		},
+		{
+			"path" : "pages/examIndex/examIndex",
+			"style" :                                                                                    
+			{
+				
+				"enablePullDownRefresh": false,
+				"navigationBarTitleText": "模拟考试"
+			}
+			
+		}
+		
+        ,{
+            "path" : "pages/WrongQuestionIndex/WrongQuestionIndex",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的错题",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+		    "path" : "pages/userFavorIndex/userFavorIndex",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "我的收藏",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/sign/sign",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "图标识记",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/signGrid/signGrid",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "图标识记",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/swiper/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "图标识记",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/score/score",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的成绩",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+		,{
+		    "path" : "pages/auth/login/login",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "登录",
+		        "enablePullDownRefresh": false
+		    } 
+		    
+		},{
+		    "path" : "pages/auth/register/register",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "注册",
+				"navigationStyle": "custom",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/auth/forget/forget",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "忘记密码",
+				"navigationStyle": "custom",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/Error/Error",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "出错了!",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+		
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#5199ff",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#00aaff",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/home/index",
+			"iconPath": "./static/icon/carn.png",
+			"selectedIconPath": "./static/icon/car.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/mine/index",
+			"iconPath": "./static/icon/prosonn.png",
+			"selectedIconPath": "./static/icon/proson.png",
+			"text": "我的"
+		}]
+	},
+	"condition" : { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "", //模式名称
+				"path": "", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			}
+		]
+	}
+
+}

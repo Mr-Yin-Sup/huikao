@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.User">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="u_name" jdbcType="VARCHAR" property="uName" />
+    <result column="u_sex" jdbcType="CHAR" property="uSex" />
+    <result column="u_number" jdbcType="VARCHAR" property="uNumber" />
+    <result column="u_password" jdbcType="VARCHAR" property="uPassword" />
+    <result column="u_phone" jdbcType="VARCHAR" property="uPhone" />
+    <result column="u_img" jdbcType="VARCHAR" property="uImg" />
+    <result column="u_wxid" jdbcType="VARCHAR" property="uWxid" />
+    <result column="u_type" jdbcType="CHAR" property="uType" />
+    <result column="u_car" jdbcType="CHAR" property="uCar" />
+    <result column="u_collection" jdbcType="VARCHAR" property="uCollection"/>
+    <result column="u_state" jdbcType="VARCHAR" property="uState"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    u_id, u_name, u_sex, u_number, u_password, u_phone, u_img, u_wxid, u_type, u_car ,u_collection
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where u_id = #{uId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where u_id = #{uId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.User">
+    insert into user (u_id, u_name, u_sex, 
+      u_number, u_password, u_phone, 
+      u_img, u_wxid, u_type, u_car
+      )
+    values (#{uId,jdbcType=INTEGER}, #{uName,jdbcType=VARCHAR}, #{uSex,jdbcType=CHAR}, 
+      #{uNumber,jdbcType=VARCHAR}, #{uPassword,jdbcType=VARCHAR}, #{uPhone,jdbcType=VARCHAR}, 
+      #{uImg,jdbcType=VARCHAR}, #{uWxid,jdbcType=VARCHAR}, #{uType,jdbcType=CHAR}, #{uCar,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="uId != null">
+        u_id,
+      </if>
+      <if test="uName != null">
+        u_name,
+      </if>
+      <if test="uSex != null">
+        u_sex,
+      </if>
+      <if test="uNumber != null">
+        u_number,
+      </if>
+      <if test="uPassword != null">
+        u_password,
+      </if>
+      <if test="uPhone != null">
+        u_phone,
+      </if>
+      <if test="uImg != null">
+        u_img,
+      </if>
+      <if test="uWxid != null">
+        u_wxid,
+      </if>
+      <if test="uType != null">
+        u_type,
+      </if>
+      <if test="uCar != null">
+        u_car,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="uId != null">
+        #{uId,jdbcType=INTEGER},
+      </if>
+      <if test="uName != null">
+        #{uName,jdbcType=VARCHAR},
+      </if>
+      <if test="uSex != null">
+        #{uSex,jdbcType=CHAR},
+      </if>
+      <if test="uNumber != null">
+        #{uNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="uPassword != null">
+        #{uPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="uPhone != null">
+        #{uPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="uImg != null">
+        #{uImg,jdbcType=VARCHAR},
+      </if>
+      <if test="uWxid != null">
+        #{uWxid,jdbcType=VARCHAR},
+      </if>
+      <if test="uType != null">
+        #{uType,jdbcType=CHAR},
+      </if>
+      <if test="uCar != null">
+        #{uCar,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.User">
+    update user
+    <set>
+      <if test="uName != null">
+        u_name = #{uName,jdbcType=VARCHAR},
+      </if>
+      <if test="uSex != null">
+        u_sex = #{uSex,jdbcType=CHAR},
+      </if>
+      <if test="uNumber != null">
+        u_number = #{uNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="uPassword != null">
+        u_password = #{uPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="uPhone != null">
+        u_phone = #{uPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="uImg != null">
+        u_img = #{uImg,jdbcType=VARCHAR},
+      </if>
+      <if test="uWxid != null">
+        u_wxid = #{uWxid,jdbcType=VARCHAR},
+      </if>
+      <if test="uType != null">
+        u_type = #{uType,jdbcType=CHAR},
+      </if>
+      <if test="uCar != null">
+        u_car = #{uCar,jdbcType=CHAR},
+      </if>
+    </set>
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.User">
+    update user
+    set u_name = #{uName,jdbcType=VARCHAR},
+      u_sex = #{uSex,jdbcType=CHAR},
+      u_number = #{uNumber,jdbcType=VARCHAR},
+      u_password = #{uPassword,jdbcType=VARCHAR},
+      u_phone = #{uPhone,jdbcType=VARCHAR},
+      u_img = #{uImg,jdbcType=VARCHAR},
+      u_wxid = #{uWxid,jdbcType=VARCHAR},
+      u_type = #{uType,jdbcType=CHAR},
+      u_car = #{uCar,jdbcType=CHAR}
+    where u_id = #{uId,jdbcType=INTEGER}
+  </update>
+  <select id="findLogin" resultMap="BaseResultMap" parameterType="cn.mryin.driveexam.mapper.UserMapper">
+    select * from user where (u_number=#{uNumber} or u_phone=#{uNumber}) and u_password=#{uPassword}
+  </select>
+
+  <select id="checkUserExis" resultMap="BaseResultMap" parameterType="string">
+    select * from user where u_number=#{uNumber}
+  </select>
+
+  <update id="updatePassword" parameterType="string" >
+    update user set  u_password = #{uPassword} where u_id = #{uId}
+  </update>
+
+  <update id="updateUserCollection" parameterType="String">
+      update user set  u_collection = #{uCollection} where u_id = #{uId}
+  </update>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from user where u_type=0
+    <if test="uName != null">
+      and u_name like  concat('%', #{uName}, '%')
+    </if>
+    and u_state!='9'
+  </select>
+
+
+  <update id="setUserState">
+    update user set u_state=#{uState} where u_id=#{uId}
+  </update>
+
+  <select id="checkPhoneNumberIsRegister" resultType="int" parameterType="string">
+    select count(*) from user  where u_phone=#{phoneNumber,jdbcType=VARCHAR}
+  </select>
+
+
+  <update id="userUpdatePassword">
+    update user set u_password = #{uPassword}  where u_phone=#{uPhone};
+  </update>
+</mapper>

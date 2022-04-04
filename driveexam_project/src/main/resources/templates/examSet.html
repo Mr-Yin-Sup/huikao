@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+
+	</head>
+	<body>
+		<div id="app">
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+			<el-table :data="subjectProportions" stripe border style="width: 100%">
+				<el-table-column label="车型"  width="180">
+
+					<template slot-scope="scope">
+							<div class="name-wrapper">
+								<p class="text-hidden">{{ scope.row.car=='1'?'小车':scope.row.car=='2'?'货车':scope.row.car=='3'?'客车':'摩托车' }}</p>
+							</div>
+					</template>
+				</el-table-column>
+
+				<el-table-column label="科目" width="300" >
+
+					<template slot-scope="scope">
+						<div class="name-wrapper">
+							<p class="text-hidden">{{ scope.row.km=='1'?'科目一':'科目四' }}</p>
+						</div>
+					</template>
+				</el-table-column>
+
+
+
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+						<el-button size="mini" @click="showExamSet(scope.$index, scope.row)">查看</el-button>
+						<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">设置</el-button>
+
+					</template>
+				</el-table-column>
+			</el-table>
+
+
+			<el-dialog title="设置出题比例" :close-on-press-escape="false" :close-on-click-modal="false"
+				:visible.sync="showModView">
+
+				<el-form label-position="right" label-width="250px" >
+
+					<el-form-item v-for="(item1,index) in modForm" :label="item1.chapter_name">
+						<el-select v-model="modData[index]">
+							<el-option
+									v-for="item in selectBox"
+									:label="item+'%'"
+									:key="item"
+									:value="item">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<span style="float: right;color: #ff5048;font-size: 12px;margin-bottom: 10px" >出题比例的总和必须是100% 否则无法更改</span>
+					<br style="clear: both">
+					<span style="float: right;color: #ff5048;font-size: 12px;margin-bottom: 10px" >已选择：{{modDataSum<=0?100:modDataSum}}%</span>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="showModView=false">取 消</el-button>
+					<el-button type="primary" @click="updateKnowPoint">确 定</el-button>
+				</div>
+			</el-dialog>
+
+			<el-dialog
+					title="出题比例"
+					:visible.sync="showSetView"
+					width="30%"
+					>
+				<p v-if="showSetViewData!=null">{{showSetViewData[0].car=='1'?'小车':showSetViewData[0].car=='2'?'货车':showSetViewData[0].car=='3'?'客车':'摩托车'}} &nbsp; {{showSetViewData[0].km=='1'?'科目一':'科目四'}} &nbsp;出题比例 ：</p>
+				<span v-for="item in showSetViewData">
+					{{item.chapter_name}} ：{{item.proportion==null||item.proportion==undefined?'0':item.proportion}}%
+					<br>
+				</span>
+				<span slot="footer" class="dialog-footer">
+					<el-button type="primary" @click="showSetView = false">确 定</el-button>
+				  </span>
+			</el-dialog>
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					subjectProportions: null,
+					showModView: false,
+					showSetView:false,
+					selectBox:[0,10,20,30,40,50,60,70,80,90,100],
+					showSetViewData:null,
+					modForm:null,
+					modData:[],
+					modChapterId:[],//对应的章节id,
+					modCarAndKm:{
+						car:null,
+						km:null
+					}
+
+
+				},
+
+				methods: {
+					handleEdit(index, row) {
+						let that = this;
+						this.modData=[];
+						this.modChapterId=[];
+						$.post("/admin/findExamSetByCarAndKm",{'car':row.car,'km':row.km},function(res) {
+
+							for(let i=0;i<res.data.length;i++){
+								that.modChapterId[i]=res.data[i].chapter_id;
+								that.modData[i]=res.data[i].proportion;
+							}
+							that.modForm = res.data;
+							that.modCarAndKm.car=res.data[0].car;
+							that.modCarAndKm.km=res.data[0].km;
+							that.showModView=true;
+						})
+
+					},
+					showExamSet(index, row){
+						let that = this;
+
+						$.post("/admin/findExamSetByCarAndKm",{'car':row.car,'km':row.km},function(res) {
+
+							that.showSetViewData = res.data;
+							that.showSetView=true;
+						})
+					},
+					updateTable() {
+
+
+						let that = this;
+
+						$.post("/admin/findExamSet", function(res) {
+
+							that.subjectProportions = res;
+							that.$message({
+								type: "success",
+								message: '数据拉取成功',
+							})
+						})
+					},
+
+					updateKnowPoint() {
+						let that = this;
+
+						let sum=0;
+						for(let i =0;i<this.modData.length;i++) sum+=this.modData[i];
+
+						if (sum!=100){
+							this.$alert("<span style=\"color: #ff5048;font-size: 16px;margin-bottom: 10px\" >当前出题比例的总和不等于100%。无法更改。请检查！</span>", '错误', {
+								dangerouslyUseHTMLString: true
+							});
+							return;
+						}
+
+
+						$.ajax({
+							url: '/admin/modExamSet',
+							type: 'post',
+							dataType: 'text',
+							data: {
+								ids: that.modChapterId,
+								propors:that.modData,
+								car:that.modCarAndKm.car,
+								km:that.modCarAndKm.km
+							},
+							success:function (res) {
+									if (res=='success'){
+											that.$notify({
+												title: '成功',
+												message: '设置成功',
+												type: 'success'
+											});
+									that.showModView=false;
+								}
+							}
+						})
+
+						// $.post("/admin/modKnowPoint", {
+						//
+						// }, function(res) {
+						// 	if (res == "success") {
+						// 		that.$notify({
+						// 			title: '成功',
+						// 			message: '修改成功',
+						// 			type: 'success'
+						// 		});
+						// 		that.showModView = false;
+						// 		that.updateTable();
+						// 		return;
+						// 	}
+						// 	alert("错误");
+						// })
+					}
+				},
+				created() {
+					this.updateTable();
+				},
+				computed: {
+					modDataSum(){
+						let sum=0;
+						for (let i=0;i<this.modData.length;i++){
+							sum+=this.modData[i];
+						}
+						return sum;
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

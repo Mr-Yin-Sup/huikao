@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>慧考后台登录</title>
+	<meta name="author" content="DeathGhost" />
+	<link rel="stylesheet" type="text/css" href="css/dmaku.css" tppabs="css/dmaku.css" />
+	<script src="/js/jquery.js"></script>
+	<script src="/js/verificationNumbers.js" tppabs="js/verificationNumbers.js"></script>
+	<script src="/js/Particleground.js" tppabs="js/Particleground.js"></script>
+	<script src="/js/jquery-form.js"></script>
+
+
+	<script>
+	$(document).ready(function() {
+
+	  //粒子背景特效
+	  $('body').particleground({
+		dotColor: '#5cbdaa',
+		lineColor: '#5cbdaa'
+	  });
+	  //验证码
+        createCode();
+	});
+	</script>
+</head>
+
+<body >
+<form id="login_form" method="post">
+<dl class="admin_login">
+ <dt>
+  <strong>慧考后台管理系统</strong>
+<!--  <em>Management System</em>-->
+ </dt>
+ <dd class="user_icon">
+  <input type="text" placeholder="账号" id="user_name" name="uNumber" class="login_txtbx"/>
+ </dd>
+ <dd class="pwd_icon">
+  <input type="password" placeholder="密码" id="user_password" name="uPassword" class="login_txtbx"/>
+ </dd>
+
+ <dd class="val_icon">
+  <div class="checkcode">
+    <input type="text" id="J_codetext" placeholder="验证码" maxlength="4" class="login_txtbx">
+    <canvas class="J_codeimg" id="myCanvas" onclick="createCode()">对不起，您的浏览器不支持canvas，请下载最新版浏览器!</canvas>
+  </div>
+  <!--<input type="button" value="验证码核验" class="ver_btn" onClick="validate();">-->
+ </dd>
+ <dd>
+  <input type="button" id="login_btn" value="立即登陆" class="submit_btn"/>
+ </dd>
+</dl>
+</form>
+</body>
+<script>
+	  
+        $("#login_btn").click(function () {
+
+
+            if($("#user_password").val()==''||$("#user_name").val()==''){
+				alert('账号或者密码未输入,请检查!');
+			}else{
+                if(validate()!=true){alert("验证码错误或者未输入!");return;}//判断验证码是否正确
+                $("#login_form").ajaxSubmit({
+                    type: "post",
+                    dataType: "text",
+                    url: "/doLogin",
+                    success: function (data) {
+                        if (data != "error"){
+                            Setcookie("token",data, 60 * 24);
+						    window.location="/admin/index"
+                        }else {
+                            alert("账号或者密码错误")
+                        }
+
+                    } , error:function(jqXHR){
+                        alert("发生错误："+ jqXHR.status);
+                    }
+                });
+            	}
+            })
+
+
+        //监听验证码回车按钮
+        $('#J_codetext').bind('keyup', function(event) {
+            if (event.keyCode == "13") {
+                //回车执行查询
+                $('#login_btn').click();
+            }
+        });
+
+        function Setcookie (name, value,time)
+
+        {
+
+            //设置名称为name,值为value的Cookie
+            var expdate = new Date();   //初始化时间
+            expdate.setTime(expdate.getTime() +  60 * 1000 * time);   //时间
+            document.cookie = name+"="+value+";expires="+expdate.toGMTString()+";path=/";
+
+            //即document.cookie= name+"="+value+";path=/";   时间可以不要，但路径(path)必须要填写，因为JS的默认路径是当前页，如果不填，此cookie只在当前页面生效！~
+        }
+	</script>
+
+
+
+</html>

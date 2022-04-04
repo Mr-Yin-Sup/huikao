@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.SubjectProportionMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.SubjectProportion">
+    <id column="km" jdbcType="CHAR" property="km" />
+    <id column="car" jdbcType="CHAR" property="car" />
+    <id column="chapter_id" jdbcType="INTEGER" property="chapterId" />
+    <result column="proportion" jdbcType="TINYINT" property="proportion" />
+    <association property="chapter" select="cn.mryin.driveexam.mapper.ChapterMapper.selectByPrimaryKey" column="chapter_id"/>
+
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    km, car, chapter_id, proportion
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.SubjectProportionKey" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from subject_proportion
+    where km = #{km,jdbcType=CHAR}
+      and car = #{car,jdbcType=CHAR}
+      and chapter_id = #{chapterId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.SubjectProportionKey">
+    delete from subject_proportion
+    where km = #{km,jdbcType=CHAR}
+      and car = #{car,jdbcType=CHAR}
+      and chapter_id = #{chapterId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.SubjectProportion">
+    insert into subject_proportion (km, car, chapter_id, 
+      proportion)
+    values (#{km,jdbcType=CHAR}, #{car,jdbcType=CHAR}, #{chapterId,jdbcType=INTEGER}, 
+      #{proportion,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.SubjectProportion">
+    insert into subject_proportion
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="km != null">
+        km,
+      </if>
+      <if test="car != null">
+        car,
+      </if>
+      <if test="chapterId != null">
+        chapter_id,
+      </if>
+      <if test="proportion != null">
+        proportion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="km != null">
+        #{km,jdbcType=CHAR},
+      </if>
+      <if test="car != null">
+        #{car,jdbcType=CHAR},
+      </if>
+      <if test="chapterId != null">
+        #{chapterId,jdbcType=INTEGER},
+      </if>
+      <if test="proportion != null">
+        #{proportion,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.SubjectProportion">
+    update subject_proportion
+    <set>
+      <if test="proportion != null">
+        proportion = #{proportion,jdbcType=TINYINT},
+      </if>
+    </set>
+    where km = #{km,jdbcType=CHAR}
+      and car = #{car,jdbcType=CHAR}
+      and chapter_id = #{chapterId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.SubjectProportion">
+    update subject_proportion
+    set proportion = #{proportion,jdbcType=TINYINT}
+    where km = #{km,jdbcType=CHAR}
+      and car = #{car,jdbcType=CHAR}
+      and chapter_id = #{chapterId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select  * from subject_proportion
+  </select>
+
+
+  <select id="findCarAndKm" resultType="java.util.HashMap">
+    select subject_proportion.car,subject_proportion.km
+  from subject_proportion
+  GROUP BY subject_proportion.car,subject_proportion.km
+  </select>
+
+  <select id="findExamSetByCarAndKm" resultType="java.util.HashMap" >
+     select * from chapter LEFT join (select * from subject_proportion where subject_proportion.car=#{param1} and km=#{param2}) as t1 ON(t1.chapter_id=chapter.chapter_id) where chapter.chapter_car like concat('%', #{param1}, '%') and chapter.km=#{param2} ORDER BY proportion desc
+  </select>
+
+
+  <select id="findOneExamSetByCarAndKm" resultType="java.util.HashMap">
+    select * from chapter LEFT join (select * from subject_proportion where subject_proportion.car=#{param1} and km=#{param2}) as t1 ON(t1.chapter_id=chapter.chapter_id) where chapter.chapter_car like concat('%', #{param1}, '%') and chapter.km=#{param2} ORDER BY proportion desc
+  </select>
+
+
+  <insert id="modExamSet" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      insert subject_proportion (car,km,proportion,chapter_id) values(#{item.car},#{item.km},#{item.propor},#{item.chapter})
+    </foreach>
+  </insert>
+
+<!--  设置考试之前删除-->
+  <delete id="beforeDelExamSet">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      DELETE FROM subject_proportion  where car=#{item.car} and km=#{item.km} and  chapter_id=#{item.chapter}
+    </foreach>
+  </delete>
+</mapper>

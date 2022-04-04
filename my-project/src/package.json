@@ -1,0 +1,11 @@
+{
+    "id": "oveui-grid",
+    "name": "基于uni-app简单的宫格组件",
+    "version": "1.2.0316",
+    "description": "Grid宫格组件，提供移动端常见的宫格布局",
+    "keywords": [
+        "宫格组件",
+        "grid",
+        "grid-item"
+    ]
+}

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.IcnoTypeMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.IcnoType">
+    <id column="icno_type_id" jdbcType="INTEGER" property="icnoTypeId" />
+    <result column="icno_type_name" jdbcType="VARCHAR" property="icnoTypeName" />
+    <result column="icno_parent" jdbcType="INTEGER" property="icnoParent" />
+    <result column="level" property="level" jdbcType="VARCHAR"></result>
+    <result column="is_list" property="isList"></result>
+    <association property="parentType" javaType="cn.mryin.driveexam.pojo.IcnoType"  >
+      <id column="fid" jdbcType="INTEGER" property="icnoTypeId" />
+      <result column="fname" jdbcType="VARCHAR" property="icnoTypeName" />
+    </association>
+    <collection property="icnos" column="icno_type_id" select="cn.mryin.driveexam.mapper.IcnoMapper.findByTypeId">
+
+    </collection>
+    <collection property="children" column="icno_type_id" select="findChildrenByparent"></collection>
+  </resultMap>
+
+  <resultMap id="BaseResultMap1" type="cn.mryin.driveexam.pojo.IcnoType">
+    <id column="icno_type_id" jdbcType="INTEGER" property="icnoTypeId" />
+    <result column="icno_type_name" jdbcType="VARCHAR" property="icnoTypeName" />
+    <result column="icno_parent" jdbcType="INTEGER" property="icnoParent" />
+    <result column="level" property="level" jdbcType="VARCHAR"></result>
+    <association property="parentType" javaType="cn.mryin.driveexam.pojo.IcnoType"  >
+      <id column="fid" jdbcType="INTEGER" property="icnoTypeId" />
+      <result column="fname" jdbcType="VARCHAR" property="icnoTypeName" />
+    </association>
+    <collection property="icnos" column="icno_type_id" select="cn.mryin.driveexam.mapper.IcnoMapper.findByTypeId">
+
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    icno_type_id, icno_type_name, icno_parent,is_list
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   select
+    t1.*,t2.icno_type_name as fname,t2.icno_type_id as fid
+    from icno_type as t1 join icno_type as t2 on(t1.icno_parent=t2.icno_type_id)
+    where t1.icno_type_id = #{icnoTypeId,jdbcType=INTEGER}
+
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from icno_type
+    where icno_type_id = #{icnoTypeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.IcnoType">
+    insert into icno_type (icno_type_id, icno_type_name, icno_parent,level,is_list
+      )
+    values (#{icnoTypeId,jdbcType=INTEGER}, #{icnoTypeName,jdbcType=VARCHAR}, #{icnoParent,jdbcType=INTEGER}, #{level,jdbcType=INTEGER},#{isList,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.IcnoType">
+    insert into icno_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="icnoTypeId != null">
+        icno_type_id,
+      </if>
+      <if test="icnoTypeName != null">
+        icno_type_name,
+      </if>
+      <if test="icnoParent != null">
+        icno_parent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="icnoTypeId != null">
+        #{icnoTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="icnoTypeName != null">
+        #{icnoTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="icnoParent != null">
+        #{icnoParent,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.IcnoType">
+    update icno_type
+    <set>
+      <if test="icnoTypeName != null">
+        icno_type_name = #{icnoTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="icnoParent != null">
+        icno_parent = #{icnoParent,jdbcType=INTEGER},
+      </if>
+    </set>
+    where icno_type_id = #{icnoTypeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.IcnoType">
+    update icno_type
+    set icno_type_name = #{icnoTypeName,jdbcType=VARCHAR},
+      icno_parent = #{icnoParent,jdbcType=INTEGER}
+    where icno_type_id = #{icnoTypeId,jdbcType=INTEGER}
+  </update>
+
+<!--  查询所有顶级分类-->
+  <select id="findTopIcnoSType" resultMap="BaseResultMap">
+    select * from icno_type where  icno_type_id != 0 and level=1  order by is_list desc
+  </select>
+
+<!--  查询顶级分类的子集-->
+  <select id="findChildrenByparent" resultMap="BaseResultMap1" parameterType="int">
+<!--    select * from icno_type where level=2 and icno_type.icno_parent=#{id}-->
+
+
+    select icno_type.*,t2.icno_type_name as fname  from icno_type join icno_type as t2 ON icno_type.icno_parent=t2.icno_type_id
+ where icno_type.level=2 and icno_type.icno_parent=#{id}
+  </select>
+
+<!--查询所有分类-->
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from icno_type
+  </select>
+
+
+</mapper>

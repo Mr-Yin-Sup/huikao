@@ -1,0 +1,918 @@
+<html class="x-admin-sm" xmlns:th="http://www.springframework.org/schema/mvc">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.1</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/element.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/element.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <script type="text/javascript" src="/js/cookie.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+        .v-modal{
+            z-index: 1900;
+        }
+        .el-dialog__wrapper{
+            z-index: 2000 !important;
+        }
+        .el-upload-dragger {
+            width: 100% !important;
+        }
+        .el-upload{
+            width: 100% !important;
+        }
+        .text-hidden {
+            white-space: nowrap;
+            margin-left: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .el-table--border td {
+            border-right: 1px solid #CCCCCC;
+        }
+
+        .el-table td {
+            border-bottom: 1px solid #CCCCCC;
+        }
+
+        .el-table td, .el-table th.is-leaf {
+            border-top: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+        }
+
+        .demo-table-expand {
+            font-size: 0;
+        }
+
+        .demo-table-expand label {
+            width: 90px;
+            color: #99a9bf;
+        }
+
+        .demo-table-expand .el-form-item {
+            margin-right: 0;
+            margin-bottom: 0;
+            width: 50%;
+        }
+
+        .search {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .search > div {
+            float: left;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        .el-upload-list{
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+
+
+    <div class="x-body">
+        <div class="layui-row">
+
+            <div class="search" style="width: 100%;height: 50px;line-height: 50px">
+                <div><span style="font-size: 22px">筛选:</span></div>
+                <div>
+                    <span>科目:</span>
+                    <el-select v-model="searchList.km" placeholder="请选择">
+                        <el-option label="不选择" :value="null"></el-option>
+                        <el-option label="科目一" value="1"></el-option>
+                        <el-option label="科目四" value="4"></el-option>
+                    </el-select>
+                </div>
+
+                <div>
+                    <span>车型:</span>
+                    <el-select v-model="searchList.car" placeholder="请选择">
+                        <el-option label="不选择" :value="null"></el-option>
+                        <el-option label="小车" value="1"></el-option>
+                        <el-option label="货车" value="2"></el-option>
+                        <el-option label="客车" value="3"></el-option>
+                        <el-option label="摩托车" value="4"></el-option>
+                    </el-select>
+                </div>
+
+                <div>
+                    <span>题目类型:</span>
+                    <el-select v-model="searchList.sType" placeholder="请选择">
+                        <el-option label="不选择" :value="null"></el-option>
+                        <el-option label="选择题" value="1"></el-option>
+                        <el-option label="判断题" value="2"></el-option>
+                        <el-option label="多选题" value="3"></el-option>
+                    </el-select>
+                </div>
+                <div>
+                    <span>章节:</span>
+                    <el-select v-model="searchList.chapter" placeholder="请选择">
+                        <el-option label="不选择" :value="null"></el-option>
+                        <el-option v-for="item in searchList.chapterList" :label="item.chapterName" :value="item.chapterId"></el-option>
+
+                    </el-select>
+                </div>
+                <div>
+                    <span>知识点:</span>
+                    <el-select v-model="searchList.knowPoint" placeholder="请选择">
+                        <el-option label="不选择" :value="null"></el-option>
+                        <el-option v-for="item in knowPoints" :label="item.knowName" :value="item.knowId"></el-option>
+
+                    </el-select>
+                </div>
+
+                <div>
+                    <span>问题:</span>
+                    <el-input v-model="searchList.questions" style="width: 200px"></el-input>
+                </div>
+
+                <div>
+                    <el-button @click="search">筛选</el-button>
+                    <el-button @click="clearSeach">清空筛选</el-button>
+                    <el-button type="danger" @click="delCheck">删除选中</el-button>
+                    <el-button type="primary" @click="showAddViewClick">添加题目</el-button>
+                    <el-button type="primary" @click="showMoreAddViewClick">批量添加</el-button>
+
+
+                    <el-button type="primary" @click="updateTable">刷新表格</el-button>
+                </div>
+
+
+            </div>
+        </div>
+        <div>
+<!--            <el-button type="danger" @click="delCheck">删除选中</el-button>-->
+<!--            <el-button type="primary" @click="showAddView=true">添加题目</el-button>-->
+<!--            <el-button type="primary" @click="showMoreAddView=true">批量添加</el-button>-->
+<!--            <el-button type="primary" @click="updateTable">刷新表格</el-button>-->
+            <span class="x-right" style="line-height:40px">总共{{total}}条记录</span>
+        </div>
+
+
+        <el-table
+                :data="tableData"
+                border
+
+                ref="refTable"
+                stripe
+                @row-click="rowClick"
+                @selection-change="handleSelectionChange"
+        >
+            <!--          选择框-->
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="题号">
+                            <span>{{ props.row.sId }}</span>
+                        </el-form-item>
+
+                        <el-form-item label="题目类型">
+                            <span>{{ props.row.sType }}</span>
+                        </el-form-item>
+                        <el-form-item label="科目">
+                            <p>{{ props.row.sKm }}</p>
+                        </el-form-item>
+
+                        <el-form-item label="所属车型">
+                            <p>{{ props.row.sCar }}</p>
+                        </el-form-item>
+                        <el-form-item label="题目">
+                            <p>{{ props.row.sQuestion }}</p>
+                        </el-form-item>
+                        <el-form-item label="图片">
+                            <img style="max-width: 300px;max-height: 300px" :src="props.row.sImg" alt="">
+                        </el-form-item>
+                        <el-form-item label="选项A">
+                            <p>{{ props.row.itemA }}</p>
+                        </el-form-item>
+                        <el-form-item label="选项B">
+                            <p>{{ props.row.itemB }}</p>
+                        </el-form-item>
+                        <el-form-item label="选项C">
+                            <p>{{ props.row.itemC }}</p>
+                        </el-form-item>
+                        <el-form-item label="选项D">
+                            <p>{{ props.row.itemD }}</p>
+                        </el-form-item>
+                        <el-form-item label="答案">
+                            <p>{{ props.row.answer }}</p>
+                        </el-form-item>
+                        <el-form-item label="解析">
+                            <p>{{ props.row.sExplain }}</p>
+                        </el-form-item>
+                        <el-form-item label="是否停用">
+                            <p>{{ props.row.sDisable }}</p>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="sId"
+                    label="题号"
+                    width="80"
+                    sortable
+            >
+
+            </el-table-column>
+
+            </el-table-column>
+
+
+            <el-table-column
+                    prop="sKm"
+                    label="科目"
+                    sortable
+            >
+
+            </el-table-column>
+
+
+            <el-table-column
+                    prop="sType"
+                    label="题目类型"
+                    sortable
+                    width="110"
+            >
+
+            </el-table-column>
+            <el-table-column
+                    prop="sCar"
+                    label="所属车型"
+                    sortable
+                    width="110"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.sCar }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.sCar }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+
+
+            </el-table-column>
+
+
+            <el-table-column
+                    label="章节"
+            >
+
+
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.chapter.chapterName }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.chapter.chapterName }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+
+
+            <el-table-column
+                    prop="sQuestion"
+                    label="问题"
+                    width="300"
+            >
+
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <div style="width: 500px">
+                            <p>{{ scope.row.sQuestion }}</p>
+                        </div>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.sQuestion }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+
+            </el-table-column>
+            <el-table-column
+                    label="图片"
+                    width="100"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <img style="max-width: 300px;max-height: 300px" :src="scope.row.sImg" alt="">
+                        <div slot="reference" class="name-wrapper">
+                            <img :src="scope.row.sImg" alt="" style="max-height: 40px;max-width: 80px" >
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="itemA"
+                    label="选项A"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.itemA }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.itemA }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="itemB"
+                    label="选项B"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.itemB }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.itemB }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="itemC"
+                    label="选项C"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.itemC }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.itemC }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="itemD"
+                    label="选项D"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.itemD }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.itemD }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="answer"
+                    label="答案"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="sExplain"
+                    label="解释"
+                    width="300"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <div style="width: 500px">
+                            <p>{{ scope.row.sExplain }}</p>
+                        </div>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.sExplain }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="knowPoints.knowName"
+                    label="知识点"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <p class="text-hidden">{{ scope.row.knowPoints.knowName }}</p>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden">{{ scope.row.knowPoints.knowName }}</p>
+                        </div>
+                    </el-popover>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    prop="sDisable"
+                    label="是否停用"
+                    sortable
+                    width="110"
+            >
+                <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                        <div style="margin: 0 auto">
+                            <el-button @click="stateSubject(scope.row.sId,scope.row.sDisable)"
+                                       v-if="scope.row.sDisable==0" type="danger">点击停用
+                            </el-button>
+                            <el-button @click="stateSubject(scope.row.sId,scope.row.sDisable)" v-else type="success">
+                                点击启用
+                            </el-button>
+                        </div>
+                        <div slot="reference" class="name-wrapper">
+                            <p class="text-hidden" v-if="scope.row.sDisable==0">
+                                <el-tag>
+                                    已启用
+                                </el-tag>
+                            </p>
+                            <p class="text-hidden" v-else>
+                                <el-tag type="danger">
+                                    已禁用
+                                </el-tag>
+                            </p>
+                        </div>
+                    </el-popover>
+                </template>
+
+
+            </el-table-column>
+
+
+            <el-table-column label="操作" width="180" fixed="right">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.row.sId)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="deleteSubject(scope.row.sId)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+
+        <!--        分页功能-->
+        <div style="width: 100%">
+            <div class="block" style="width: 50%;margin: 0 auto">
+
+                <el-pagination
+                        style="margin: 0 auto"
+                        @size-change="size_change"
+                        @current-change="current_change"
+                        :current-page="current_page"
+                        :page-sizes="[5, 10, 15, 20]"
+                        :page-size="page_size"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
+        </div>
+
+        <a href="#top" style="position: fixed;bottom: 30px;right: 50px;z-index: 999" target="_self">返回顶部</a>
+
+
+        <!--添加弹窗-->
+        <el-dialog
+
+                title="添加题目"
+                :visible.sync="showAddView"
+                width="80%"
+                height="100%"
+
+                @close="updateTable"
+        >
+            <iframe ref="addView" id="addView" src="/admin/productAdd" frameborder="0" width="100%" height="600px"></iframe>
+            <span slot="footer" class="dialog-footer">
+<!--            调用子iframe页面中的方法进行保存-->
+        <el-button @click="addSubject">确定</el-button>
+        <el-button @click="showAddView = false">关闭</el-button>
+
+      </span>
+        </el-dialog>
+
+        <!--修改弹窗-->
+        <el-dialog
+                title="修改题目"
+                :visible.sync="showModView"
+                ref="modSubjectViewDialog"
+                width="80%"
+                height="100%"
+
+        >
+            <iframe ref="modView" id="modView" :src="'/admin/productMod?sId='+modId" frameborder="0" width="100%"
+                    height="600px"></iframe>
+            <span slot="footer" class="dialog-footer">
+                <!--            调用子iframe页面中的方法进行修改-->
+        <el-button @click="modSubject">修改</el-button>
+        <el-button @click="showModView = false">关闭</el-button>
+
+      </span>
+        </el-dialog>
+
+
+<!--        批量添加题目-->
+
+        <el-dialog
+                title="批量导入"
+                :visible.sync="showMoreAddView"
+                width="30%"
+                :show-close="false"
+                center>
+            <div >
+                <el-button style="margin-bottom: 10px; width: 100%" @click="downLoadExcelTemplate">下载Excel导入模板</el-button>
+                <el-upload
+                        class="upload-demo"
+                        style="width: 100%"
+                        drag
+                        action="/admin/addSubjectByExcel"
+                        :multiple="false"
+                        accept=".xlsx"
+                        :before-upload="beforeUploadExcel"
+                        ref="uploadExcel"
+                        :auto-upload="false"
+                        :limit=1
+                        :on-error="upExcelError"
+                        :on-success="upExcelSuccess"
+
+                >
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将编辑好的excel拖动到这，或<em>点击上传</em></div>
+                    <div class="el-upload__tip" slot="tip">只能上传.xlsx文件,且不能超过10Mb</div>
+                </el-upload>
+            </div>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="showMoreAddViewHiden">取 消</el-button>
+            <el-button type="primary" @click="uploadExcel">提 交</el-button>
+  </span>
+        </el-dialog>
+
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    let app = new Vue({
+        el: '#app',
+        data: {
+            loading:null,
+            tableData: [],
+            knowPoints: [],
+            // tableData: [[${subjectList}]],
+            // knowPoints: [[${knowPoints}]],
+            showMoreAddView:false,
+            showAddView: false,
+            showModView: false,
+            checkSubject: [],
+            current_page: 1,//当前页数
+            page_size: 10,//一页显示多少条
+            // total: [[${page_total}]],//总共多少条
+            total: 100,//总共多少条
+            modId: '1',
+            searchList: {
+                questions: null,
+                knowPoint: null,
+                chapter: null,
+                sType: null,
+                km: null,
+                car: null,
+                chapterList:null
+            }
+        },
+
+        created(){
+            console.log("created")
+            let that=this;
+            $.get("/admin/findAllSubject2",{pageNum:that.current_page,pageSize:that.page_size},res=>{
+                that.tableData=res.data;
+                that.knowPoints=res.knowPoints;
+                that.total=res.total;
+                console.log(res);
+            })
+        },
+        methods: {
+            showMoreAddViewClick(){
+                this.showMoreAddView=true;
+
+                setTimeout(()=>{
+                    document.getElementsByClassName("v-modal")[0].style.zIndex=1900;
+                },100)
+
+            },
+            showAddViewClick(){
+               this.showAddView=true;
+
+               setTimeout(()=>{
+                   document.getElementsByClassName("v-modal")[0].style.zIndex=1900;
+               },100)
+
+            },
+            downLoadExcelTemplate(){//下载导入模板
+                //先获取模板信息更新
+                $.get("/admin/updateExcelTemplate",res=>{
+                    if(res=="success"){
+                        //下载
+                        window.location.href="/uploadFile/excel/addSubjectExcel.xlsx"
+                    }else{
+                        this.$message.error("获取失败!");
+                    }
+                })
+            },
+            showMoreAddViewHiden(){//隐藏批量添加弹窗
+                this.showMoreAddView = false;
+                this.$refs.uploadExcel.clearFiles();//清空文件列表
+            },
+            upExcelError(){
+                this.$message.error("上传出错了!")
+                return ;
+            },
+            upExcelSuccess(response, file, fileList){
+                if(response.msg=='success'){
+
+
+                    this.$confirm(`添加成功,已添加${response.res}条数据`, '成功', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        showCancelButton:false,
+                        type: 'success'
+                    }).then(() => {});
+
+                    this.search();
+                    this.showMoreAddView=false;
+                    this.$refs.uploadExcel.clearFiles();//清空文件列表
+                }else{
+
+                    this.$confirm(`出错了!${response.msg}`, '错误!', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        showCancelButton:false,
+                        type: 'error'
+                    }).then(() => {});
+                    this.$refs.uploadExcel.clearFiles();//清空文件列表
+
+                }
+            },
+            uploadExcel(){
+                this.$refs.uploadExcel.submit();
+            },
+            beforeUploadExcel(file){
+
+                if(file.size>(1024*1024*10)){
+                    this.$notify.error("上传文件不能大于10Mb!");
+                    return false;
+                }
+
+            },
+            deleteSubject(sId) {//删除题目
+                let that = this;
+
+                this.$confirm('您确定要删除改题目?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $.get("/admin/deleteSubject", {sId: sId}, function (res) {
+                        if (res == "success") {
+                            that.$notify({
+                                title: '删除成功',
+                                message: '您以成功删除一条记录。',
+                                type: 'success'
+                            });
+                            that.search();
+                        } else {
+                            that.$notify.error({
+                                title: '删除失败',
+                                message: '您删除失败了。',
+                                type: 'success'
+                            });
+                        }
+                    })
+                }).catch(() => {
+                    this.$notify({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+
+            },
+            updateTable() {//更新表格数据
+                let that = this;
+                $.get("/admin/findAllSubject", {pageNum: that.current_page, pageSize: that.page_size}, function (res) {
+
+                    that.tableData = res.data;
+                    that.total = res.total;
+
+                }, "json")
+            },
+            handleSelectionChange(val) {//表格多选框
+                this.checkSubject = val;
+            },
+            delCheck() {//删除选择的题目
+                let that = this;
+                if (this.checkSubject.length > 0) {
+                    let str = '';
+                    for (let i = 0; i < this.checkSubject.length; i++) {
+                        str += this.checkSubject[i].sId + ','
+                    }
+                    str = str.slice(0, str.length - 1);
+
+                    this.$confirm('此操作将删除这' + this.checkSubject.length + '条数据, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        $.post("/admin/deleteCheck", {checks: str}, function (res) {
+                            if (res == 'success') {
+                                that.$notify({
+                                    type: 'success',
+                                    message: '删除成功!'
+                                });
+                                that.search();
+                                return;
+                            }
+                        })
+
+                    }).catch(() => {
+                        that.$notify({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                }
+            },
+            handleEdit(id) {//显示修改视图
+
+                this.modId = id;
+
+
+                this.loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    body:true,
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                setTimeout(() => {
+                    if(this.loading!=null){
+                        this.loading.close();
+                    }
+
+                }, 4000);
+
+                this.showModView = true;
+            },
+            stateSubject(sId, state) {//修改题目是否启用
+                let that = this;
+                $.post("/admin/modSubjcetState", {sId: sId, state: state}, function (res) {
+                    if (res == "success") {
+                        that.$notify({
+                            type: 'success',
+                            message: '状态修改成功!'
+                        });
+                        that.search();
+                    }
+                })
+            },
+            current_change(e) {//跳转分页
+                this.current_page = e;
+                this.search();
+            },
+            size_change(e) {//修改每页显示数量
+                this.page_size = e;
+                this.search();
+            },
+            rowClick(row, column, event) {//鼠标点击展开一行数据
+                // console.log(row)
+                // this.$refs.refTable.toggleRowExpansion(row);
+            },
+            search() {//筛选
+                let that=this;
+
+                $.post("/admin/seachSubject", {
+                    pageNum: this.current_page,
+                    pageSize: this.page_size,
+                    sQuestion: this.searchList.questions,
+                    sType: this.searchList.sType,
+                    sKm: this.searchList.km,
+                    sCar: this.searchList.car,
+                    chapterId: this.searchList.chapter,
+                    knowId: this.searchList.knowPoint
+                }, function (res) {
+                    that.tableData=res.data;
+                    that.total=res.total;
+                    if(res.total<=0){
+                        that.$message({
+                            type: 'error',
+                            message: '查询到的结果为空!'
+                        });
+                        return;
+                    }
+                    that.$notify({
+                        type: 'success',
+                        message: '筛选成功!'
+                    });
+
+
+                }, "json")
+            },
+            clearSeach() {//清除筛选
+                Object.keys(this.searchList).forEach(k => {
+                    this.searchList[k] = null;
+                });
+               this.updateTable();
+            },
+            addSubject(){
+                let data = {
+                    type:2,
+                    code:200,
+                    data:'addClick'
+                }
+                this.$refs.addView.contentWindow.postMessage(data,'*')
+            },
+            modSubject(){
+                let data = {
+                    type:2,
+                    code:200,
+                    data:'addClick'
+                }
+                this.$refs.modView.contentWindow.postMessage(data,'*')
+            }
+        },
+
+        mounted() {
+            let that = this;
+            // 监听子页面想父页面的传参
+            window.addEventListener('message', function (event) {
+
+                console.log(event.data)
+                if (event.data.data == "close") {//数据添加成功关闭子页面
+                    that.$notify({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+                    that.showAddView = false;
+                    that.search();
+
+                }
+
+                if (event.data.data == "updateOk") {//数据修改成功关闭子页面
+                    that.$notify({
+                        type: 'success',
+                        message: '修改成功!'
+                    });
+
+                    that.showModView = false;
+                    that.search();
+
+                }
+
+                if (event.data.data == "closeLoad"){//关闭加载框
+                    that.loading.close();
+                    document.getElementsByClassName("v-modal")[0].style.zIndex=1900;
+                    that.loading=null;
+
+                }
+
+            })
+        },
+
+        watch: {
+            'searchList.km': function () {
+                let that = this;
+                $.ajax({
+                    url: '/admin/findChapterByKm',
+                    data: {
+                        id: this.searchList.km
+                    },
+                    success: function (res) {
+                        console.log(res.data)
+                        that.searchList.chapterList = res.data;
+                        that.searchList.chapter=null;
+                        console.log($(".v-model").html())
+
+                    }
+                })
+            }
+        }
+
+    })
+
+
+</script>
+
+</body>
+
+</html>

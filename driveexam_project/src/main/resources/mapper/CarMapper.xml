@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.CarMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.Car">
+    <id column="car_id" jdbcType="CHAR" property="carId" />
+    <result column="car_name" jdbcType="VARCHAR" property="carName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    car_id, car_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from car
+    where car_id = #{carId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from car
+    where car_id = #{carId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.Car">
+    insert into car (car_id, car_name)
+    values (#{carId,jdbcType=CHAR}, #{carName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.Car">
+    insert into car
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="carId != null">
+        car_id,
+      </if>
+      <if test="carName != null">
+        car_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="carId != null">
+        #{carId,jdbcType=CHAR},
+      </if>
+      <if test="carName != null">
+        #{carName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.Car">
+    update car
+    <set>
+      <if test="carName != null">
+        car_name = #{carName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where car_id = #{carId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.Car">
+    update car
+    set car_name = #{carName,jdbcType=VARCHAR}
+    where car_id = #{carId,jdbcType=CHAR}
+  </update>
+  <select id="findAll" resultType="cn.mryin.driveexam.pojo.Car" resultMap="BaseResultMap" >
+    select * from car
+  </select>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.ChapterMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.Chapter">
+    <id column="chapter_id" jdbcType="INTEGER" property="chapterId" />
+    <result column="chapter_name" jdbcType="VARCHAR" property="chapterName" />
+    <result column="km" jdbcType="CHAR" property="km" />
+    <result column="chapter_car" jdbcType="VARCHAR" property="chapterCar" />
+    <association property="count" column="chapter_id" select="selectCount"/>
+<!--    <collection property="subjects"   ofType="cn.mryin.driveexam.pojo.Subject"   select="cn.mryin.driveexam.mapper.SubjectMapper.findSubjectByChapterId"  column="chapter_id">-->
+
+<!--    </collection>-->
+  </resultMap>
+
+  <resultMap id="BaseResultMap1" type="cn.mryin.driveexam.pojo.Chapter">
+    <id column="chapter_id" jdbcType="INTEGER" property="chapterId" />
+    <result column="chapter_name" jdbcType="VARCHAR" property="chapterName" />
+    <result column="km" jdbcType="CHAR" property="km" />
+    <result column="chapter_car" jdbcType="VARCHAR" property="chapterCar" />
+<!--    <collection property="subjects"   ofType="cn.mryin.driveexam.pojo.Subject"   select="cn.mryin.driveexam.mapper.SubjectMapper.findSubjectByChapterId"  column="chapter_id">-->
+    <association property="count" column="chapter_id" select="selectCount"/>
+
+  </resultMap>
+
+  <select id="selectCount" resultType="int" parameterType="int">
+    select count(*) from subject where chapter_id=#{chapter_id}
+  </select>
+
+  <sql id="Base_Column_List">
+    chapter_id, chapter_name, km, chapter_car
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from chapter
+    where chapter_id = #{chapterId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from chapter
+    where chapter_id = #{chapterId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.Chapter">
+    insert into chapter (chapter_id, chapter_name, km, 
+      chapter_car)
+    values (#{chapterId,jdbcType=INTEGER}, #{chapterName,jdbcType=VARCHAR}, #{km,jdbcType=CHAR}, 
+      #{chapterCar,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.Chapter">
+    insert into chapter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="chapterId != null">
+        chapter_id,
+      </if>
+      <if test="chapterName != null">
+        chapter_name,
+      </if>
+      <if test="km != null">
+        km,
+      </if>
+      <if test="chapterCar != null">
+        chapter_car,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="chapterId != null">
+        #{chapterId,jdbcType=INTEGER},
+      </if>
+      <if test="chapterName != null">
+        #{chapterName,jdbcType=VARCHAR},
+      </if>
+      <if test="km != null">
+        #{km,jdbcType=CHAR},
+      </if>
+      <if test="chapterCar != null">
+        #{chapterCar,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.Chapter">
+    update chapter
+    <set>
+      <if test="chapterName != null">
+        chapter_name = #{chapterName,jdbcType=VARCHAR},
+      </if>
+      <if test="km != null">
+        km = #{km,jdbcType=CHAR},
+      </if>
+      <if test="chapterCar != null">
+        chapter_car = #{chapterCar,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where chapter_id = #{chapterId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.Chapter">
+    update chapter
+    set chapter_name = #{chapterName,jdbcType=VARCHAR},
+      km = #{km,jdbcType=CHAR},
+      chapter_car = #{chapterCar,jdbcType=VARCHAR}
+    where chapter_id = #{chapterId,jdbcType=INTEGER}
+  </update>
+  <select id="findByKm" resultMap="BaseResultMap">
+    select * from chapter where km=#{km_id}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from chapter
+  </select>
+
+<!--  单表查询-->
+  <select id="findAllOnly" resultMap="BaseResultMap1">
+    select * from chapter
+  </select>
+</mapper>

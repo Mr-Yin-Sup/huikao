@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/element.css">
+
+		<script type="text/javascript" src="/js/jquery.js"></script>
+		<script src="/js/vue.js"></script>
+		<script src="/js/element.js"></script>
+
+
+
+	</head>
+	<body>
+		<div id="app">
+
+
+
+			<el-button @click="handleCheck" type="primary">批量处理</el-button>
+			<el-button type="primary" @click="updateTable">刷新表格</el-button>
+
+
+			<el-table :data="list" stripe border  @selection-change="handleSelectionChange" style="width: 100%">
+				<!--          选择框-->
+				<el-table-column
+						type="selection"
+						width="55">
+				</el-table-column>
+				<el-table-column label="用户ID" prop="user.uId" width="80">
+
+				</el-table-column>
+
+				<el-table-column label="用户名" width="100" prop="user.uName">
+
+				</el-table-column>
+
+
+				<el-table-column label="反馈内容" width="500" prop="fbackMsg">
+					<template slot-scope="scope">
+						<el-popover trigger="hover" placement="top">
+							<div style="width: 500px">
+								<p>{{ scope.row.fbackMsg }}</p>
+							</div>
+							<div slot="reference" class="name-wrapper">
+								<p class="text-hidden">{{ scope.row.fbackMsg }}</p>
+							</div>
+						</el-popover>
+					</template>
+				</el-table-column>
+				<el-table-column label="反馈时间" width="180" prop="time">
+
+				</el-table-column>
+
+				<el-table-column label="操作">
+					<template slot-scope="scope">
+
+						<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">已处理
+						</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+
+			<!--        分页功能-->
+			<div style="width: 100%">
+				<div class="block" >
+
+					<el-pagination
+							style="margin: 0 auto"
+							@size-change="size_change"
+							@current-change="current_change"
+							:current-page="current_page"
+							:page-sizes="[5, 10, 15, 20]"
+							:page-size="page_size"
+							layout="total, sizes, prev, pager, next, jumper"
+							:total="total">
+					</el-pagination>
+				</div>
+			</div>
+
+
+		</div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					showAddView: false,
+					knowPoints: null,
+					list:null,
+					showModView: false,
+					current_page:1 ,//当前页数
+					page_size: 10,//一页显示多少条
+					total: 0,//总共多少条
+					checkFBack:[],
+					pageNum:1,
+					addForm: {
+						knowName: ""
+					},
+					modForm: {
+						knowName: "",
+						knowId: null
+					}
+
+				},
+
+				methods: {
+					handleSelectionChange(val) {//表格多选框
+						this.checkFBack = val;
+					},
+					current_change(e) {//跳转分页
+						this.current_page = e;
+						this.updateTable();
+					},
+					size_change(e) {//修改每页显示数量
+						this.page_size = e;
+						this.updateTable();
+					},
+
+					handleDelete(index, row) {
+						let that = this;
+
+						this.$confirm('已经处理了?', '提示', {
+							confirmButtonText: '确定',
+							cancelButtonText: '取消',
+							type: 'warning'
+						}).then(() => {
+							$.post("/admin/handleFBack", {
+								'id': row.fbackId,
+								'state':1
+							}, function(res) {
+								if (res == "success") {
+									that.$notify({
+										title: '成功',
+										message: '处理成功',
+										type: 'success'
+									});
+									that.updateTable();
+									return;
+
+								}
+							})
+						}).catch(() => {
+							this.$notify({
+								type: 'info',
+								message: '已取消删除'
+							});
+						});
+
+					},
+					updateTable() {
+
+						let that = this;
+
+						$.post("/admin/findAllFback", {pageNum:this.current_page,pageSize: this.page_size},function(res) {
+
+							that.total=res.total;
+							that.list = res.list;
+							that.$notify({
+								type: "success",
+								message: '数据拉取成功',
+							})
+						})
+					},
+					handleCheck() {//删除选择的题目
+						let that = this;
+						if (this.checkFBack.length > 0) {
+							let str = '';
+							for (let i = 0; i < this.checkFBack.length; i++) {
+								str += this.checkFBack[i].fbackId + ','
+							}
+							str = str.slice(0, str.length - 1);
+
+							this.$confirm('处理这' + this.checkFBack.length + '条数据, 是否继续?', '提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
+								$.post("/admin/handleCheck", {checks: str}, function (res) {
+									if (res == 'success') {
+										that.$message({
+											type: 'success',
+											message: '处理成功!'
+										});
+										that.updateTable();
+										return;
+									}
+								})
+
+							}).catch(() => {
+								that.$message({
+									type: 'info',
+									message: '已取消删除'
+								});
+							});
+						}
+					},
+
+				},
+				created() {
+					this.updateTable();
+				}
+			});
+		</script>
+	</body>
+</html>

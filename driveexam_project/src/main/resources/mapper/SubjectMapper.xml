@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mryin.driveexam.mapper.SubjectMapper">
+  <resultMap id="BaseResultMap" type="cn.mryin.driveexam.pojo.Subject">
+    <id column="s_id" jdbcType="INTEGER" property="sId" />
+    <result column="s_question" jdbcType="VARCHAR" property="sQuestion" />
+    <result column="s_img" jdbcType="VARCHAR" property="sImg" />
+    <result column="s_type" jdbcType="CHAR" property="sType" />
+    <result column="s_km" jdbcType="CHAR" property="sKm" />
+    <result column="s_car" jdbcType="CHAR" property="sCar" />
+    <result column="item_a" jdbcType="VARCHAR" property="itemA" />
+    <result column="item_b" jdbcType="VARCHAR" property="itemB" />
+    <result column="item_c" jdbcType="VARCHAR" property="itemC" />
+    <result column="item_d" jdbcType="VARCHAR" property="itemD" />
+    <result column="answer" jdbcType="VARCHAR" property="answer" />
+    <result column="s_explain" jdbcType="VARCHAR" property="sExplain" />
+    <result column="chapter_id" jdbcType="INTEGER" property="chapterId" />
+    <result column="know_id" jdbcType="INTEGER" property="knowId" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="mod_time" jdbcType="TIMESTAMP" property="modTime" />
+    <result column="success_count" jdbcType="BIGINT" property="successCount" />
+    <result column="error_count" jdbcType="BIGINT" property="errorCount" />
+    <result column="s_disable" jdbcType="CHAR" property="sDisable" />
+    <association property="chapter" javaType="cn.mryin.driveexam.pojo.Chapter"  >
+          <id property="chapterId" column="chapter_id1" />
+          <result property="chapterName" column="chapter_name"/>
+          <result property="km" column="km"/>
+          <result property="chapterCar" column="chapter_car"/>
+      </association>
+
+    <association property="knowPoints" javaType="cn.mryin.driveexam.pojo.KnowPoints"  >
+      <id property="knowId" column="know_id1" />
+      <result property="knowName" column="know_name"/>
+      <result property="knowKm" column="know_km"/>
+      <result property="knowCar" column="know_car"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    s_id, s_question, s_img, s_type, s_km, s_car, item_a, item_b, item_c, item_d, answer, 
+    s_explain, chapter_id, know_id, add_time, mod_time, success_count, error_count, s_disable
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from subject
+    where s_id = #{sId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from subject
+    where s_id = #{sId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mryin.driveexam.pojo.Subject">
+    insert into subject (s_id, s_question, s_img, 
+      s_type, s_km, s_car, item_a, 
+      item_b, item_c, item_d, 
+      answer, s_explain, chapter_id, 
+      know_id, add_time, mod_time, 
+      success_count, error_count, s_disable
+      )
+    values (#{sId,jdbcType=INTEGER}, #{sQuestion,jdbcType=VARCHAR}, #{sImg,jdbcType=VARCHAR}, 
+      #{sType,jdbcType=CHAR}, #{sKm,jdbcType=CHAR}, #{sCar,jdbcType=CHAR}, #{itemA,jdbcType=VARCHAR}, 
+      #{itemB,jdbcType=VARCHAR}, #{itemC,jdbcType=VARCHAR}, #{itemD,jdbcType=VARCHAR}, 
+      #{answer,jdbcType=VARCHAR}, #{sExplain,jdbcType=VARCHAR}, #{chapterId,jdbcType=INTEGER}, 
+      #{knowId,jdbcType=INTEGER}, (SELECT NOW()), (SELECT NOW()),
+      #{successCount,jdbcType=BIGINT}, #{errorCount,jdbcType=BIGINT}, 0
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mryin.driveexam.pojo.Subject">
+    insert into subject
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sId != null">
+        s_id,
+      </if>
+      <if test="sQuestion != null">
+        s_question,
+      </if>
+      <if test="sImg != null">
+        s_img,
+      </if>
+      <if test="sType != null">
+        s_type,
+      </if>
+      <if test="sKm != null">
+        s_km,
+      </if>
+      <if test="sCar != null">
+        s_car,
+      </if>
+      <if test="itemA != null">
+        item_a,
+      </if>
+      <if test="itemB != null">
+        item_b,
+      </if>
+      <if test="itemC != null">
+        item_c,
+      </if>
+      <if test="itemD != null">
+        item_d,
+      </if>
+      <if test="answer != null">
+        answer,
+      </if>
+      <if test="sExplain != null">
+        s_explain,
+      </if>
+      <if test="chapterId != null">
+        chapter_id,
+      </if>
+      <if test="knowId != null">
+        know_id,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="modTime != null">
+        mod_time,
+      </if>
+      <if test="successCount != null">
+        success_count,
+      </if>
+      <if test="errorCount != null">
+        error_count,
+      </if>
+      <if test="sDisable != null">
+        s_disable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sId != null">
+        #{sId,jdbcType=INTEGER},
+      </if>
+      <if test="sQuestion != null">
+        #{sQuestion,jdbcType=VARCHAR},
+      </if>
+      <if test="sImg != null">
+        #{sImg,jdbcType=VARCHAR},
+      </if>
+      <if test="sType != null">
+        #{sType,jdbcType=CHAR},
+      </if>
+      <if test="sKm != null">
+        #{sKm,jdbcType=CHAR},
+      </if>
+      <if test="sCar != null">
+        #{sCar,jdbcType=CHAR},
+      </if>
+      <if test="itemA != null">
+        #{itemA,jdbcType=VARCHAR},
+      </if>
+      <if test="itemB != null">
+        #{itemB,jdbcType=VARCHAR},
+      </if>
+      <if test="itemC != null">
+        #{itemC,jdbcType=VARCHAR},
+      </if>
+      <if test="itemD != null">
+        #{itemD,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="sExplain != null">
+        #{sExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="chapterId != null">
+        #{chapterId,jdbcType=INTEGER},
+      </if>
+      <if test="knowId != null">
+        #{knowId,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null">
+        #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="successCount != null">
+        #{successCount,jdbcType=BIGINT},
+      </if>
+      <if test="errorCount != null">
+        #{errorCount,jdbcType=BIGINT},
+      </if>
+      <if test="sDisable != null">
+        #{sDisable,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mryin.driveexam.pojo.Subject">
+    update subject
+    <set>
+      <if test="sQuestion != null">
+        s_question = #{sQuestion,jdbcType=VARCHAR},
+      </if>
+      <if test="sImg != null">
+        s_img = #{sImg,jdbcType=VARCHAR},
+      </if>
+      <if test="sType != null">
+        s_type = #{sType,jdbcType=CHAR},
+      </if>
+      <if test="sKm != null">
+        s_km = #{sKm,jdbcType=CHAR},
+      </if>
+      <if test="sCar != null">
+        s_car = #{sCar,jdbcType=CHAR},
+      </if>
+      <if test="itemA != null">
+        item_a = #{itemA,jdbcType=VARCHAR},
+      </if>
+      <if test="itemB != null">
+        item_b = #{itemB,jdbcType=VARCHAR},
+      </if>
+      <if test="itemC != null">
+        item_c = #{itemC,jdbcType=VARCHAR},
+      </if>
+      <if test="itemD != null">
+        item_d = #{itemD,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null">
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="sExplain != null">
+        s_explain = #{sExplain,jdbcType=VARCHAR},
+      </if>
+      <if test="chapterId != null">
+        chapter_id = #{chapterId,jdbcType=INTEGER},
+      </if>
+      <if test="knowId != null">
+        know_id = #{knowId,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modTime != null">
+        mod_time = #{modTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="successCount != null">
+        success_count = #{successCount,jdbcType=BIGINT},
+      </if>
+      <if test="errorCount != null">
+        error_count = #{errorCount,jdbcType=BIGINT},
+      </if>
+      <if test="sDisable != null">
+        s_disable = #{sDisable,jdbcType=CHAR},
+      </if>
+    </set>
+    where s_id = #{sId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mryin.driveexam.pojo.Subject">
+    update subject
+    set s_question = #{sQuestion,jdbcType=VARCHAR},
+      s_img = #{sImg,jdbcType=VARCHAR},
+      s_type = #{sType,jdbcType=CHAR},
+      s_km = #{sKm,jdbcType=CHAR},
+      s_car = #{sCar,jdbcType=CHAR},
+      item_a = #{itemA,jdbcType=VARCHAR},
+      item_b = #{itemB,jdbcType=VARCHAR},
+      item_c = #{itemC,jdbcType=VARCHAR},
+      item_d = #{itemD,jdbcType=VARCHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      s_explain = #{sExplain,jdbcType=VARCHAR},
+      chapter_id = #{chapterId,jdbcType=INTEGER},
+      know_id = #{knowId,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      mod_time =((SELECT NOW())),
+      success_count = #{successCount,jdbcType=BIGINT},
+      error_count = #{errorCount,jdbcType=BIGINT},
+      s_disable = #{sDisable,jdbcType=CHAR}
+    where s_id = #{sId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findAllByCarAndKm" resultMap="BaseResultMap" >
+        SELECT * FROM `subject`
+      JOIN know_points ON (know_points.know_id=`subject`.know_id)
+      JOIN chapter on(chapter.chapter_id=`subject`.chapter_id)
+
+            where
+            chapter_car like "%"#{param1}"%" and s_km=#{param2}
+
+ order by subject.chapter_id desc
+
+
+    </select>
+<!--  删除多条题目通过id数组-->
+  <delete id="deleteCheck" parameterType="_int[]" >
+
+     <![CDATA[
+        DELETE FROM subject
+        WHERE s_id in
+        ]]>
+    <foreach collection="array" item="arr" index="no" open="("
+             separator="," close=")">
+      #{arr}
+    </foreach>
+  </delete>
+<!--查询所有题目-->
+  <select id="findAll" resultMap="BaseResultMap">
+      SELECT * FROM `subject`
+        JOIN know_points ON (know_points.know_id=`subject`.know_id)
+        JOIN chapter on(chapter.chapter_id=`subject`.chapter_id)
+        order by subject.s_id desc
+  </select>
+<!--查询题目通过条件-->
+  <select id="seachSubject" resultMap="BaseResultMap" resultType="cn.mryin.driveexam.pojo.Subject">
+    SELECT * FROM `subject`
+    JOIN know_points ON (know_points.know_id=`subject`.know_id)
+    JOIN chapter on(chapter.chapter_id=`subject`.chapter_id)
+    where 1=1
+    <if test="sKm != null  and sKm!=''">
+      and subject.s_km = #{sKm}
+    </if>
+
+    <if test="sType != null and sType!=''">
+      and subject.s_type =#{sType}
+    </if>
+
+    <if test="sCar != null and sCar!=''">
+      and chapter.chapter_car like concat('%', #{sCar}, '%')
+    </if>
+
+    <if test="knowId != null  and knowId!=''">
+      and subject.know_id =#{knowId}
+    </if>
+
+    <if test="chapterId != null  and chapterId!=''">
+      and subject.chapter_id =#{chapterId}
+    </if>
+
+
+    <if test="sQuestion != null and sQuestion!=''">
+      and subject.s_question like concat('%', #{sQuestion}, '%')
+    </if>
+    order by subject.s_id desc
+  </select>
+<!--查询题目列表,通过多个id-->
+  <select id="findSubjectByAllId" resultMap="BaseResultMap" >
+
+    SELECT * FROM `subject`
+        JOIN know_points ON (know_points.know_id=`subject`.know_id)
+        JOIN chapter on(chapter.chapter_id=`subject`.chapter_id)
+       WHERE subject.s_id in
+
+    <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+             #{id}
+    </foreach>
+
+  </select>
+
+<!--  修改题目-->
+  <update id="modSubjectState">
+    update subject set subject.s_disable=#{param2} where s_id=#{param1}
+  </update>
+
+<!--  查询题目,通过章节ID-->
+  <select id="findSubjectByChapterId" resultMap="BaseResultMap">
+    select * from subject where chapter_id=#{chapter_id}
+  </select>
+
+  <!--  查询题目,通过知识点ID-->
+  <select id="findSubjectByKnowId" resultMap="BaseResultMap">
+    select * from subject where subject.know_id=#{know_id}
+  </select>
+
+<!--  查询题目通过车型和科目-->
+  <select id="findSubjectByCarAndKm" resultMap="BaseResultMap">
+      SELECT * FROM `subject`
+        JOIN know_points ON (know_points.know_id=`subject`.know_id)
+        JOIN chapter on(chapter.chapter_id=`subject`.chapter_id)
+        <where>
+          <if test="sCar != null ">
+            chapter.chapter_car like concat('%', #{sCar}, '%')
+          </if>
+          <if test="sKm != null ">
+            and subject.s_km = #{sKm}
+          </if>
+          and s_disable=0
+        </where>
+        ORDER BY add_time
+  </select>
+
+<!--查询题目总数,通过车型和科目-->
+  <select id="findSubjectTotalByCarAndKm" resultType="int" >
+    select count(*) from subject JOIN chapter on(chapter.chapter_id=`subject`.chapter_id)
+    <where>
+        chapter.chapter_car like concat('%', #{sCar}, '%')
+        and subject.s_km = #{sKm}
+        and s_disable=0
+    </where>
+  </select>
+
+
+<!--  通过excele得到的List导入-->
+  <insert id="insertByExcele" parameterType="java.util.List">
+
+    insert into subject (
+         s_question, s_img,
+          s_type, s_km,
+          item_a,item_b,
+          item_c, item_d,
+          answer, s_explain,
+         chapter_id,know_id,
+         add_time, mod_time
+      )
+    values
+
+    <foreach collection="list" item="s" index="index" separator=",">
+      (
+        #{s.sQuestion}, #{s.sImg},
+        #{s.sType}, #{s.sKm},
+        #{s.itemA}, #{s.itemB},
+        #{s.itemC}, #{s.itemD},
+        #{s.answer}, #{s.sExplain},
+        #{s.chapterId}, #{s.knowId},
+        (SELECT NOW()), (SELECT NOW())
+      )
+    </foreach>
+
+
+  </insert>
+  
+  <select id="selectLikeQuestion" parameterType="String" resultMap="BaseResultMap">
+    SELECT * FROM `subject` WHERE s_question like concat('%', #{sQuestion}, '%')
+  </select>
+</mapper>

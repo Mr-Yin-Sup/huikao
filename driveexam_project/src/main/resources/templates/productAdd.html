@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.springframework.org/schema/mvc">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>添加数据</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/css/font.css">
+      <link rel="stylesheet" href="/css/element.css">
+    <link rel="stylesheet" href="/css/xadmin.css">
+      <script src="/js/vue.js"></script>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script src="/js/element.js"></script>
+    <script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/xadmin.js"></script>
+    <script type="text/javascript" src="/js/cookie.js"></script>
+
+
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+      <style>
+          .el-radio{
+              margin-right: 10px;
+          }
+          .formT{
+              width: 90%;height: 100%;margin: 0 auto;
+          }
+          .form-line{
+              width: 100%;min-height: 35px;
+              margin-bottom: 30px;
+          }
+          .form-left{
+              width: 14%;height: 100%;float: left;text-align: right;line-height: 35px;padding-right: 4%;font-size: 16px;color: #2b2b2b;
+          }
+          .form-right{
+              width: 80%;float: right;line-height: 35px
+          }
+
+
+          .avatar-uploader .el-upload {
+              border: 1px dashed #d9d9d9;
+              border-radius: 6px;
+              cursor: pointer;
+              position: relative;
+              overflow: hidden;
+          }
+          .avatar-uploader{
+              width: 110px;
+              display: inline-block;
+          }
+          .avatar-uploader .el-upload:hover {
+              border-color: #409EFF;
+          }
+          .avatar-uploader-icon {
+              font-size: 28px;
+              color: #8c939d;
+              width: 100px;
+              height: 100px;
+              line-height: 100px;
+              text-align: center;
+          }
+          .avatar {
+              width: 100px;
+              height: 100px;
+              display: block;
+          }
+      </style>
+  </head>
+
+  <body >
+
+    <div class="x-body" id="app">
+
+        <form  >
+
+            <div class="formT">
+
+                <div class="form-line">
+                    <div class="form-left">
+                        <span>题目类型</span>
+                    </div>
+                    <div class="form-right">
+
+                        <el-radio-group v-model="sType" @change="checkSType">
+                            <el-radio   label="1">单选题</el-radio>
+                            <el-radio  label="2">判断题</el-radio>
+                            <el-radio   label="3">多选题</el-radio>
+                        </el-radio-group>
+                    </div>
+                </div>
+
+
+
+                <div class="form-line">
+                    <div class="form-left">
+                        <span>科目</span>
+                    </div>
+                    <div class="form-right">
+                        <el-radio-group v-model="sKm" >
+                        <div v-if="sType==3">
+                            <el-radio disabled   checked label="4">科目四</el-radio>
+                        </div>
+                        <div v-else>
+                            <el-radio   label="1">科目一</el-radio>
+                            <el-radio  label="4">科目四</el-radio>
+                        </div>
+                        </el-radio-group>
+                    </div>
+                </div>
+
+                <div class="form-line">
+                    <div class="form-left">
+                        <span>章节</span>
+                    </div>
+                    <div class="form-right">
+
+                        <el-select @change="test" v-model="chapter" placeholder="请选择">
+
+
+                            <el-option v-for="(item , index) in chapters" :label="item.chapterName" :value="item.chapterId"></el-option>
+
+                        </el-select>
+                        <span>题目属于:{{eachCar}}</span>
+                    </div>
+                </div>
+
+                <div class="form-line" >
+                    <div class="form-left">
+                        <span>题目考点</span>
+                    </div>
+                    <div class="form-right">
+
+                        <el-select @change="test" v-model="knowId" placeholder="请选择">
+
+
+                            <el-option v-for="(item , index) in knowPoints" :label="item.knowName" :value="item.knowId" ></el-option>
+
+                        </el-select>
+
+                    </div>
+                </div>
+
+                <div class="form-line" style="height: 60px">
+                    <div class="form-left">
+                        <span>题目</span>
+                    </div>
+                    <div class="form-right">
+
+                        <el-input el-input type="textarea" rows="3" v-model="sQuestion" placeholder="请输入内容"></el-input>
+
+                    </div>
+                </div>
+
+
+<!--                <div class="form-line">-->
+<!--                    <div class="form-left">-->
+<!--                        <span>图片</span>-->
+<!--                    </div>-->
+<!--                    <div class="form-right">-->
+
+<!--                        <button type="button" class="layui-btn" id="upload">上传图片</button>-->
+<!--                        <img id="img" src="" style="height: 40px;" >-->
+<!--                         <el-button  style="display:none" size="medium" id="clorImg" @click="closeImg"   > 取消上传</el-button>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+
+                <div class="form-line">
+                    <div class="form-left">
+                        <span>图片</span>
+                    </div>
+                    <div class="form-right">
+                        <el-upload
+                                class="avatar-uploader"
+                                action="/upload"
+                                ref="subjectImg"
+                                :show-file-list="false"
+                                :on-success="handleAvatarSuccess"
+                                :before-upload="beforeAvatarUpload">
+                            <img style="max-width: 150px;max-height: 150px" v-if="imageUrl" :src="imageUrl" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                        <el-button style="position: relative;bottom: 50px" size="medium"  @click="closeImg"   > 取消上传</el-button>
+                    </div>
+                </div>
+
+
+
+                <div v-if="sType==1||sType==3" style="margin-top: 100px">
+                    <div class="form-line">
+                        <div class="form-left">
+                            <span>选项A</span>
+                        </div>
+                        <div class="form-right">
+                            <el-input v-model="itemA" placeholder="请输入内容"></el-input>
+
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-left">
+                            <span>选项B</span>
+                        </div>
+                        <div class="form-right">
+                            <el-input v-model="itemB" placeholder="请输入内容"></el-input>
+
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-left">
+                            <span>选项C</span>
+                        </div>
+                        <div class="form-right">
+                            <el-input v-model="itemC" placeholder="请输入内容"></el-input>
+
+                        </div>
+                    </div>
+
+                    <div class="form-line">
+                        <div class="form-left">
+                            <span>选项D</span>
+                        </div>
+                        <div class="form-right">
+                            <el-input v-model="itemD" placeholder="请输入内容"></el-input>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div v-else style="margin-top: 100px"></div>
+
+                <div class="form-line">
+                    <div class="form-left">
+                        <span>答案</span>
+                    </div>
+                    <div class="form-right">
+
+
+                        <el-radio-group v-model="answer" v-if="sType==1" >
+                            <el-radio   label="A">A</el-radio>
+                            <el-radio  label="B">B</el-radio>
+                            <el-radio   label="C">C</el-radio>
+                            <el-radio   label="D">D</el-radio>
+                        </el-radio-group>
+
+                        <el-radio-group v-model="answer" v-if="sType==2" >
+                            <el-radio   label="A">对</el-radio>
+                            <el-radio  label="B">错</el-radio>
+
+                        </el-radio-group>
+
+
+
+                        <el-checkbox-group v-model="answerBox" @change="handleCheckedCitiesChange" v-if="sType==3">
+                            <el-checkbox-button v-for="item in boxOption" :label="item" :key="item">{{item}}</el-checkbox-button>
+
+                        </el-checkbox-group>
+
+                    </div>
+                </div>
+
+                <div style="height: 50px" class="form-line">
+                    <div class="form-left">
+                        <span>解释</span>
+                    </div>
+                    <div class="form-right">
+                        <el-input el-input type="textarea"  rows="5" v-model="sExplain" placeholder="请输入内容"></el-input>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+      </form>
+    </div>
+
+
+    <script>
+        // var imgUrl=null;
+
+
+
+
+        <!--上传那图片-->
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#upload' //绑定元素
+                ,url: '/upload' //上传接口
+                ,accept:'images'
+                ,acceptMime:"images",
+                size:1024
+                ,done: function(res){
+                    $("#clorImg").attr("style","display:blok")
+                    $("#img").attr("src",res.Data.src);
+                    imgUrl=res.Data.src;
+                }
+                ,error: function(){
+                    //请求异常回调
+                    layui.alert("error")
+                }
+            });
+        });
+
+
+
+    //    取消上传按钮
+        $("#clorImg").click(function () {
+
+            $("#clorImg").attr("style","display:none");
+            $("#img").attr("src",'');
+            imgUrl=null;
+        })
+    </script>
+
+
+
+<script th:inline="javascript">
+
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            imageUrl:null,
+            sType:'1',
+            boxOption : ['A', 'B', 'C', 'D'],
+            imgUrl:"",
+            answer:"A",
+            sKm:'1',
+            knowPoints:[[${knowPoints}]],//后端返回的model
+            chapters:[[${chapters}]],//后端返回的model
+            knowId:1,
+            chapter:1,//选择的章节
+            answerBox:['A'],
+            sImg:null,
+            sQuestion:null,
+            itemA:null,
+            itemB:null,
+            itemC:null,
+            itemD:null,
+            sExplain:null,
+
+
+
+        },
+        methods:{
+            beforeAvatarUpload(file) {
+
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传图片只能是 JPG、JPEG和PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = res.Data.src;
+                //this.modForm.uImg=res.Data.src;
+            },
+            test(){
+                console.log(this.chapter);
+            },
+            log(e){
+                console.log(e)
+
+            },
+            closeImg(){
+                this.$refs.subjectImg.clearFiles();
+                this.imageUrl=null;
+
+
+            },
+            checkSType(e){
+              if(e==3){
+                  this.sKm='4';
+              }
+            },
+            //多选
+            handleCheckedCitiesChange(value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.cities.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+            },
+            submitSubject(){//添加题目
+                let that=this;
+                $.ajax({
+                    url:'/admin/addSubject',
+                    type:'POST',
+                    data:{
+                        sQuestion:this.sQuestion,
+                        sType:this.sType,
+                        sKm:this.sKm,
+                        itemA:this.sType!='2' ? this.itemA:null,
+                        itemB:this.sType!='2' ? this.itemB:null,
+                        itemC:this.sType!='2' ? this.itemC:null,
+                        itemD:this.sType!='2' ? this.itemD:null,
+                        answer:this.sType=='3'? this.answerBox.sort().toString().replace(/,/g, ''):this.answer,
+                        sExplain:this.sExplain,
+                        chapterId:this.chapter,
+                        knowId:this.knowId,
+                        sDisable:'0',
+                        sImg: this.imageUrl==null || this.imageUrl==''?'':this.imageUrl,
+                    },
+                    success:function (res) {
+                       if (res=='success'){
+
+                           that.init();
+                           let data = {//传参到父页面让他关闭本页面
+                               type:1,
+                               code:200,
+                               data:'close'
+                           }
+                           window.parent.postMessage(data,'*');
+
+                       }else{
+                           alert("添加失败")
+                       }
+                    }
+                })
+            },
+            init(){//初始化数据
+                this.sType='1';
+
+                    this.imgUrl="";
+                   this. answer="A";
+                   this. sKm='1';
+
+                    this.chapters=[[${chapters}]];
+                    this.knowId=1;
+                    this.chapter=1;//选择的章节
+                    this.answerBox=['A'];
+                    this.sImg=null;
+                    this.sQuestion=null;
+                    this.itemA=null;
+                    this.itemB=null;
+                    this.itemC=null;
+                    this.itemD=null;
+                    this.sExplain=null;
+                    this.closeImg();
+
+            }
+
+
+        },
+        watch:{//监听data值得变化
+            'sKm':function () {
+                let that=this;
+               $.ajax({
+                   url:'/admin/findChapterByKm',
+                   data:{
+                       id:this.sKm
+                   },
+                   success:function (res) {
+                       that.chapters=res.data;
+
+                       res.data[0].km==1?that.chapter=1:that.chapter=8;
+
+                   }
+               })
+            }
+        },
+        computed:{
+            eachCar:function () {//获取题目所属的车型
+                let that=this;
+                var cars=this.chapters.find(function (obj) {
+                    return obj.chapterId == that.chapter;
+                })
+                let str='';
+
+
+                cars=cars.chapterCar;
+
+                for (let i=0;i<cars.length;i++){
+
+                    if (cars.charAt(i)=='1') {
+                        str += '小车、';
+                    }
+                    if (cars.charAt(i)=='2') {
+                        str += '货车、';
+                    }
+                    if (cars.charAt(i)=='3') {
+                        str += '客车、';
+                    }
+                    if (cars.charAt(i)=='4') {
+                        str += '摩托车、';
+                    }
+                }
+                return str.slice(0,str.length-1);
+
+
+            }
+        },
+        mounted() {
+            let that = this;
+            window.addEventListener('message', (e) => {
+                if (e.data.data=="addClick")that.submitSubject();
+
+            });
+        },
+    })
+</script>
+
+
+
+  </body>
+
+</html>

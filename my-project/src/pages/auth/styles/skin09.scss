@@ -1,0 +1,120 @@
+    $boxWidth:640rpx;
+    $mainColor: #993cd8;
+	.wrap{
+		background-color: #fcfcfc;
+		
+	}
+	.logoimg{
+		width: 160rpx;
+		height: 160rpx;
+		border-radius: 50%;
+		margin-top: 100rpx;
+		// display: none;
+	}
+	.placeholder{
+		color: #999999;
+	}
+	.main-color{
+		color: $mainColor;
+	}
+	.underline{
+		text-decoration: underline;
+	}
+	.tabs{
+		width: $boxWidth;
+		height: 100rpx;
+	}
+	.btns{
+		width: $boxWidth;
+		margin-top: 80rpx;
+	}
+	.qbtn{
+		height: 90rpx;
+		border-radius: 10rpx;
+		background-color: $mainColor;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		align-items: center;
+		justify-content: center;
+		// box-shadow: 0 1px 0 2px rgba(0,0,0,0.05);
+	}
+	.btn-text-color{
+		color: #ffffff;
+	}
+	.nav-text-color{
+		color: #999999;
+	}
+	.label{
+		font-size: 28rpx;
+		width: 120rpx;
+		// display: none;
+	}
+	.label_icon{
+		width: 38rpx;
+		height: 38rpx;
+		margin-right: 30rpx;
+		display: none;
+	}
+	.label_fgs{
+		height: 36rpx;
+		width: 1px;
+		border-left:1px solid #E5E5E5;
+		margin-right: 30rpx;
+		// display: none;
+	}
+  .topbox{
+	   width: 100%;
+	   height: 400rpx;
+	   // background-color: $mainColor;
+	   background-image: url(/static/images/bg06.png);
+	   background-repeat: no-repeat;
+	   
+	   background-size: 100%;
+  }
+  .form{
+	  width: $boxWidth;
+	  // margin-top: 100rpx;
+  }
+  .form-item{
+	  padding: 20rpx 30rpx;
+	  // border-bottom: 1px solid #eee;
+	  background-color: #f2f2f2;
+	  margin-bottom: 20rpx;
+	  border-radius: 4px;
+  }
+  .tabs .flex-1{
+	  position: relative;
+  }
+  .tabs .flex-1::before{
+	  content: "";
+	  position: absolute;
+	  bottom:0;
+	  width: 280rpx;
+	  height: 3rpx;
+	  border-radius: 4rpx;
+	  background-color: #eeeeee;
+  }
+  .active{
+	  position: relative;
+  }
+  .active::after{
+	  content: "";
+	  position: absolute;
+	  bottom:0;
+	  width: 280rpx;
+	  height: 3rpx;
+	  border-radius: 4rpx;
+	  background-color: $mainColor;
+  }
+  .curtext{
+	  color: $mainColor;
+  }
+  .yzm{
+  	  background-color: #cacaca;
+  	  color: #ffffff;
+  	  padding-left: 20rpx;
+  	  padding-right: 20rpx;
+  	  border-radius: 6rpx;
+	  margin-right: -20rpx;
+  }
