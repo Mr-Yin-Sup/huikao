@@ -3,6 +3,8 @@
 
 
 
+
+
 后端 java 1.8+SpringBoot + MyBatis + mysql + redis + jwt + poi + thymeleaf
 
 前端 uniapp + colorui
@@ -17,36 +19,26 @@
 
 ## 效果图:
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03553031.png" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (12).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03581006.png" alt="S20405-03581006" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (11).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03575481.png" alt="S20405-03575481" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (10).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03572602.png" alt="S20405-03572602" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (9).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03573006.png" alt="S20405-03573006" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (8).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03572176.png" alt="S20405-03572176" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (7).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03570451.png" alt="S20405-03570451" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (6).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03562903.png" alt="S20405-03562903" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (5).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03570000.png" alt="S20405-03570000" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (4).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03551338.png" alt="S20405-03551338" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (3).png)" style="zoom:25%;" />
 
-<img src="D:\QQFile\1009638139\FileRecv\MobileFile\S20405-03560924.png" alt="S20405-03560924" style="zoom:25%;" />
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk (2).png)" style="zoom:25%;" />
 
-![image-20220405040530259](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220405040530259.png)
-
-![image-20220405040602795](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220405040602795.png)
-
-![image-20220405040628116](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220405040628116.png)
-
-![image-20220405040637767](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220405040637767.png)
-
-![image-20220405040656927](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220405040656927.png)
-
-![image-20220405040726793](C:\Users\Lenovo\AppData\Roaming\Typora\typora-user-images\image-20220405040726793.png)
+<img src="[huikao/hk (10).png at main · Mr-Yin-Sup/huikao (github.com)](https://github.com/Mr-Yin-Sup/huikao/blob/main/driveexam_project/src/main/resources/static/png/hk1.png)" style="zoom:25%;" />
