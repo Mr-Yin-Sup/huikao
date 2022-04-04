@@ -8,6 +8,7 @@
 后端 java 1.8+SpringBoot + MyBatis + mysql + redis + jwt + poi + thymeleaf
 
 前端 uniapp + colorui 目前适配了h5 和 App 
+
 **预览网址**
 * [慧考](https://www.mryin.top/hk/#)
 
